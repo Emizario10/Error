@@ -24,10 +24,13 @@ export async function POST(req: Request) {
         product_data: {
           name: item.name,
           images: item.imageUrl ? [item.imageUrl] : [],
+          metadata: {
+            productId: item.id,
+          },
         },
         unit_amount: Math.round(item.price * 100), // Stripe uses cents
       },
-      quantity: 1, // Store currently manages single items, could be expanded
+      quantity: 1,
     }));
 
     const session = await stripe.checkout.sessions.create({
