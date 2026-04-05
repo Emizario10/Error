@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Oswald, Space_Mono, Geist } from 'next/font/google'
 import './globals.css'
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
 const oswald = Oswald({ subsets: ['latin'], variable: '--font-oswald' })
 const spaceMono = Space_Mono({ weight: ['400', '700'], subsets: ['latin'], variable: '--font-space-mono' })
 
@@ -20,8 +20,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className={`${oswald.variable} ${spaceMono.variable} bg-void-black text-white font-mono antialiased`}>
-        {children}
+      <body className={`${oswald.variable} ${spaceMono.variable} bg-black text-[#F3F4F6] font-sans antialiased`}>
+        {/* Global Frame */}
+        <Navbar />
+        
+        {/* Main Content */}
+        <main className="relative pt-16">
+          {children}
+        </main>
       </body>
     </html>
   )
