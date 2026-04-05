@@ -1,75 +1,63 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma';
 
 async function main() {
   const products = [
     {
-      name: 'Heavy Cuban Link Chain',
-      description: 'Solid stainless-steel chain finished in matte chrome; extra weight for presence.',
-      price: 5500, // $55.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1526178612120-1b6a47b8d9b6?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'HEAVY CUBAN LINK CHAIN',
+      description: 'Solid stainless-steel chain finished in matte chrome. 12mm gauge. Industrial presence.',
+      price: 85.00,
+      imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop',
       category: 'HARDWARE',
     },
     {
-      name: 'Titanium Signet Ring',
-      description: 'Laser-etched signet with industrial matte finish.',
-      price: 3500, // $35.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'TITANIUM SIGNET RING',
+      description: 'Laser-etched aerospace titanium. Void-black finish. Minimalist brutality.',
+      price: 45.00,
+      imageUrl: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1200&auto=format&fit=crop',
       category: 'HARDWARE',
     },
     {
-      name: 'Y2K Wraparound Visor',
-      description: 'Wraparound visor with anti-glare coating — dystopian silhouettes.',
-      price: 8000, // $80.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'Y2K VOID VISOR',
+      description: 'Wraparound polycarbonate visor. Anti-glare coating. Full anonymity protocol.',
+      price: 120.00,
+      imageUrl: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1200&auto=format&fit=crop',
       category: 'OPTICS',
     },
     {
-      name: 'Void Black Acetate Shades',
-      description: 'Opaque acetate shades for maximum anonymity and style.',
-      price: 4500, // $45.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'NEON ACID SHADES',
+      description: 'Translucent acid-green frames. Polarized black lenses. Integrated HUD aesthetics.',
+      price: 95.00,
+      imageUrl: 'https://images.unsplash.com/photo-1511499767390-903390e6fbc4?q=80&w=1200&auto=format&fit=crop',
       category: 'OPTICS',
     },
     {
-      name: 'Tactical Crossbody Rig',
-      description: 'Modular crossbody rig with MOLLE-compatible attachment points.',
-      price: 7900, // $79.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1591014749839-8f8a6b6f1b42?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'TACTICAL CROSSBODY RIG',
+      description: 'Ballistic nylon construction. MOLLE-compatible webbing. 4-point magnetic buckle.',
+      price: 110.00,
+      imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1200&auto=format&fit=crop',
       category: 'UTILITY',
     },
     {
-      name: 'Field Utility Pouch',
-      description: 'Weatherproof pouch for tools and small optics.',
-      price: 2800, // $28.00
-      imageUrl:
-        'https://images.unsplash.com/photo-1556909210-09f4d6a64a8b?q=80&w=1400&auto=format&fit=crop&crop=entropy',
+      name: 'CARBON CARDHOLDER',
+      description: '3K twill carbon fiber. RFID shielding. Holds 1-12 cards. Ultra-lightweight.',
+      price: 55.00,
+      imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1200&auto=format&fit=crop',
       category: 'UTILITY',
     },
   ];
 
+  console.log('--- INITIALIZING ARSENAL DEPLOYMENT ---');
+
   for (const p of products) {
-    // Use upsert to avoid duplicates on re-run
     await prisma.product.upsert({
       where: { name: p.name },
       update: {},
-      create: {
-        name: p.name,
-        description: p.description,
-        price: p.price,
-        imageUrl: p.imageUrl,
-        category: p.category,
-      },
+      create: p,
     });
+    console.log(`DEPLOYED: ${p.name}`);
   }
 
-  console.log('Seed completed');
+  console.log('--- SEEDING COMPLETE: ARSENAL ONLINE ---');
 }
 
 main()

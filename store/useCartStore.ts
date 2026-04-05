@@ -1,48 +1,93 @@
+"use client";
+
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export interface CartItem {
-  productId: string;
+  id: string;
   name: string;
-  price: number; // price in cents
-  imageUrl?: string | null;
+  price: number;
+  imageUrl: string | null;
   quantity: number;
 }
 
-export interface CartState {
-  cartItems: CartItem[];
-  addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clear: () => void;
-  totalPrice: () => number; // computed
+interface CartState {
+  items: CartItem[];
+  isOpen: boolean;
+  addItem: (product: any) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, delta: number) => void;
+  toggleCart: () => void;
+  getCartTotal: () => number;
+  getItemCount: () => number;
 }
 
-export const useCartStore = create<CartState>((set, get) => ({
-  cartItems: [],
-  addItem: (item, quantity = 1) => {
-    set((state) => {
-      const exists = state.cartItems.find((i) => i.productId === item.productId);
-      if (exists) {
-        return {
-          cartItems: state.cartItems.map((i) =>
-            i.productId === item.productId ? { ...i, quantity: i.quantity + quantity } : i
+/**
+ * USE_CART_STORE: Global Zustand manager for ARSENAL deployments.
+ * Persistent storage ensures hardware remains locked in the user's rig across sessions.
+ */
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      isOpen: false,
+
+      addItem: (product) => {
+        const currentItems = get().items;
+        const existingItem = currentItems.find((item) => item.id === product.id);
+
+        if (existingItem) {
+          set({
+            items: currentItems.map((item) =>
+              item.id === product.id
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            ),
+          });
+        } else {
+          set({
+            items: [
+              ...currentItems,
+              {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                imageUrl: product.imageUrl,
+                quantity: 1,
+              },
+            ],
+          });
+        }
+        // Auto-open cart on add for immediate feedback
+        set({ isOpen: true });
+      },
+
+      removeItem: (id) => {
+        set({ items: get().items.filter((item) => item.id !== id) });
+      },
+
+      updateQuantity: (id, delta) => {
+        set({
+          items: get().items.map((item) =>
+            item.id === id
+              ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+              : item
           ),
-        };
-      }
-      return { cartItems: [...state.cartItems, { ...item, quantity }] };
-    });
-  },
-  removeItem: (productId) =>
-    set((state) => ({ cartItems: state.cartItems.filter((i) => i.productId !== productId) })),
-  updateQuantity: (productId, quantity) =>
-    set((state) => ({
-      cartItems: state.cartItems.map((i) =>
-        i.productId === productId ? { ...i, quantity: Math.max(1, quantity) } : i
-      ),
-    })),
-  clear: () => set({ cartItems: [] }),
-  totalPrice: () => {
-    const items = get().cartItems;
-    return items.reduce((sum, it) => sum + it.price * it.quantity, 0);
-  },
-}));
+        });
+      },
+
+      toggleCart: () => set({ isOpen: !get().isOpen }),
+
+      getCartTotal: () => {
+        return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
+      },
+
+      getItemCount: () => {
+        return get().items.reduce((count, item) => count + item.quantity, 0);
+      },
+    }),
+    {
+      name: 'arsenal-cart-storage',
+    }
+  )
+);

@@ -3,6 +3,7 @@ import { Oswald, Space_Mono, Geist } from 'next/font/google'
 import './globals.css'
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
+import CartSidebar from "@/components/CartSidebar";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 const oswald = Oswald({ subsets: ['latin'], variable: '--font-oswald' })
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={`${oswald.variable} ${spaceMono.variable} bg-black text-[#F3F4F6] font-sans antialiased`}>
         {/* Global Frame */}
         <Navbar />
+        <CartSidebar />
         
         {/* Main Content */}
         <main className="relative pt-16">

@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import ProductTableClient from './ProductTableClient';
-
-const prisma = new PrismaClient();
 
 export default async function AdminPage() {
   const products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } });
