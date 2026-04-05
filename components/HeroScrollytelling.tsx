@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Float, MeshDistortMaterial } from '@react-three/drei';
+import React, { useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { PerspectiveCamera, Float, MeshDistortMaterial, Environment, ContactShadows } from '@react-three/drei';
+import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -17,10 +18,6 @@ function TacticalParts() {
   const p1 = useRef<THREE.Mesh>(null);
   const p2 = useRef<THREE.Mesh>(null);
   const p3 = useRef<THREE.Mesh>(null);
-  
-  // Use the modern THREE.Timer for animation logic if needed outside of useFrame
-  // For most R3F cases, useFrame provides the clock/delta automatically.
-  // We ensure we don't instantiate new THREE.Clock() anywhere.
 
   useGSAP(() => {
     const tl = gsap.timeline({
@@ -41,15 +38,25 @@ function TacticalParts() {
     <group>
       <mesh ref={p1} position={[0, 6, -5]} rotation={[0, 0, 0.2]}>
         <boxGeometry args={[3, 0.8, 0.1]} />
-        <MeshDistortMaterial color="#CCFF00" speed={4} distort={0.2} metalness={1} roughness={0} />
+        <MeshDistortMaterial 
+          color="#CCFF00" 
+          speed={4} 
+          distort={0.2} 
+          metalness={1} 
+          roughness={0.05} 
+          emissive="#CCFF00"
+          emissiveIntensity={2}
+        />
       </mesh>
+      
       <mesh ref={p2} position={[-10, -4, 0]} rotation={[0.5, 0, 0.5]}>
         <boxGeometry args={[2, 0.3, 0.3]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0} />
+        <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
       </mesh>
+      
       <mesh ref={p3} position={[10, -4, 0]} rotation={[0.5, 0, -0.5]}>
         <boxGeometry args={[2, 0.3, 0.3]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0} />
+        <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
       </mesh>
     </group>
   );
@@ -61,14 +68,32 @@ export default function HeroScrollytelling() {
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         
         <div className="absolute inset-0 z-0">
-          <Canvas gl={{ antialias: true, alpha: true }}>
+          <Canvas gl={{ antialias: false, alpha: true }} dpr={[1, 2]}>
             <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={30} />
-            <ambientLight intensity={0.1} />
-            <pointLight position={[5, 5, 5]} color="#CCFF00" intensity={1.5} />
             
+            <ambientLight intensity={0.1} />
+            <pointLight position={[5, 5, 5]} color="#CCFF00" intensity={2} />
+            <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#CCFF00" />
+
             <Float speed={5} rotationIntensity={0.8} floatIntensity={0.8}>
               <TacticalParts />
             </Float>
+
+            {/* HIGH-FIDELITY ENVIRONMENT */}
+            <Environment preset="city" />
+            <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={20} blur={2} far={4.5} />
+
+            {/* CINEMATIC POST-PROCESSING */}
+            <EffectComposer enableNormalPass={false}>
+              <Bloom 
+                luminanceThreshold={1} 
+                mipmapBlur 
+                intensity={1.5} 
+                radius={0.4} 
+              />
+              <Noise opacity={0.05} />
+              <Vignette eskil={false} offset={0.1} darkness={1.1} />
+            </EffectComposer>
           </Canvas>
         </div>
 
