@@ -7,14 +7,13 @@ import { useCartStore } from '@/store/useCartStore';
 
 /**
  * NAVBAR: Minimalist Cyber-Noir Finalized
- * Integrated with the ARSENAL Cart Rig.
  */
 export default function Navbar() {
-  const { toggleCart, getItemCount } = useCartStore();
-  const itemCount = getItemCount();
+  const { toggleCart, items } = useCartStore();
+  const itemCount = items.length;
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[100] h-16 flex items-center justify-between px-8 lg:px-20 bg-black/50 backdrop-blur-md border-b border-[#333]">
+    <nav className="fixed top-0 left-0 w-full z-[100] h-16 flex items-center justify-between px-8 lg:px-20 bg-black/50 backdrop-blur-md border-b border-white/5">
       {/* Brand Logo */}
       <Link href="/" className="group">
         <span className="text-sm font-bold tracking-[0.6em] text-[#F3F4F6] transition-all group-hover:text-[#CCFF00]">
@@ -31,10 +30,10 @@ export default function Navbar() {
           [ _CATALOG ]
         </Link>
         <Link 
-          href="/admin" 
+          href="/nexus-command" 
           className="text-[10px] font-mono tracking-widest text-[#F3F4F6]/40 hover:text-[#CCFF00] uppercase transition-colors"
         >
-          [ _ADMIN ]
+          [ _COMMAND ]
         </Link>
         
         <button 
@@ -43,9 +42,9 @@ export default function Navbar() {
         >
           <ShoppingBag className="w-5 h-5 text-[#F3F4F6] group-hover:text-[#CCFF00] transition-colors" />
           
-          {/* Item Badge */}
+          {/* Item Badge in Acid Green */}
           {itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[14px] h-[14px] flex items-center justify-center bg-[#CCFF00] text-black text-[8px] font-bold rounded-full shadow-[0_0_8px_#CCFF00]">
+            <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center bg-[#CCFF00] text-black text-[9px] font-black rounded-full shadow-[0_0_10px_#CCFF00]">
               {itemCount}
             </span>
           )}

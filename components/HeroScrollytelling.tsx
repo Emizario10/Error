@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useRef, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, Float, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import gsap from 'gsap';
@@ -17,6 +17,10 @@ function TacticalParts() {
   const p1 = useRef<THREE.Mesh>(null);
   const p2 = useRef<THREE.Mesh>(null);
   const p3 = useRef<THREE.Mesh>(null);
+  
+  // Use the modern THREE.Timer for animation logic if needed outside of useFrame
+  // For most R3F cases, useFrame provides the clock/delta automatically.
+  // We ensure we don't instantiate new THREE.Clock() anywhere.
 
   useGSAP(() => {
     const tl = gsap.timeline({
@@ -28,7 +32,6 @@ function TacticalParts() {
       }
     });
 
-    // Animate parts assembling in center
     tl.to(p1.current?.position || {}, { x: 0, y: 0.2, z: 0 }, 0)
       .to(p2.current?.position || {}, { x: -1.3, y: 0, z: 0 }, 0)
       .to(p3.current?.position || {}, { x: 1.3, y: 0, z: 0 }, 0);
@@ -57,13 +60,11 @@ export default function HeroScrollytelling() {
     <section id="hero-wrap" className="relative w-full h-[200vh] bg-black">
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         
-        {/* FULLSCREEN CANVAS: Absolute background layer */}
         <div className="absolute inset-0 z-0">
           <Canvas gl={{ antialias: true, alpha: true }}>
             <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={30} />
             <ambientLight intensity={0.1} />
             <pointLight position={[5, 5, 5]} color="#CCFF00" intensity={1.5} />
-            <pointLight position={[-5, -5, -5]} color="#FF003C" intensity={0.5} />
             
             <Float speed={5} rotationIntensity={0.8} floatIntensity={0.8}>
               <TacticalParts />
@@ -71,7 +72,6 @@ export default function HeroScrollytelling() {
           </Canvas>
         </div>
 
-        {/* BRUTALIST OVERLAY: Central HTML layer */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4">
           <span className="text-[#CCFF00] font-mono text-[10px] mb-8 tracking-[1.5em] opacity-60 uppercase">
             [ Deployment.Established ]
@@ -91,7 +91,6 @@ export default function HeroScrollytelling() {
           </div>
         </div>
 
-        {/* Depth Fog / Vignette Overlay */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.9)_100%)]" />
       </div>
     </section>
