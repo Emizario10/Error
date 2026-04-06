@@ -19,6 +19,16 @@ model Product {
   orderItems  OrderItem[]
 }
 
+model Profile {
+  id          String   @id // Matches Supabase Auth User ID
+  username    String   @unique
+  avatarUrl   String?  @map("avatar_url")
+  customColor String   @default("#CCFF00") @map("custom_color")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  orders      Order[]
+}
+
 model Order {
   id               String      @id @default(uuid())
   stripeSessionId  String      @unique @map("stripe_session_id")
@@ -26,6 +36,9 @@ model Order {
   status           String      @default("pending") // pending, completed, failed
   createdAt        DateTime    @default(now()) @map("created_at")
   
+  profile          Profile?    @relation(fields: [profileId], references: [id])
+  profileId        String?     @map("profile_id")
+
   items            OrderItem[]
 }
 

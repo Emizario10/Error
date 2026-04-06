@@ -35,14 +35,19 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/nexus-command/login') &&
-    request.nextUrl.pathname.startsWith('/nexus-command')
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  const isNexusRoute = request.nextUrl.pathname.startsWith('/nexus-command');
+  const isAccountRoute = request.nextUrl.pathname.startsWith('/account');
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
+  const isLoginPage = request.nextUrl.pathname.includes('/nexus-command/login');
+
+  // Redirect to vault if already authenticated and trying to access login/register
+  if (user && isAuthRoute) {
+    return NextResponse.redirect(new URL('/account', request.url));
+  }
+
+  if (!user && (isNexusRoute || isAccountRoute) && !isLoginPage) {
     const url = request.nextUrl.clone()
-    url.pathname = '/nexus-command/login'
+    url.pathname = isNexusRoute ? '/nexus-command/login' : '/login'
     return NextResponse.redirect(url)
   }
 

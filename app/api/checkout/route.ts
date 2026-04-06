@@ -1,46 +1,56 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { CartItem } from '@/store/useCartStore';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-03-25.dahlia' as any,
+  apiVersion: '2025-02-24-preview' as any,
 });
 
-/**
- * CHECKOUT_ENDPOINT: Secure payment session generation.
- */
 export async function POST(req: Request) {
   try {
     const { items }: { items: CartItem[] } = await req.json();
+    const cookieStore = await cookies();
+    
+    // 1. IDENTIFY OPERATIVE
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll() },
+        },
+      }
+    );
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!items?.length) {
-      return NextResponse.json({ error: 'RIG_EMPTY' }, { status: 400 });
-    }
+    if (!items?.length) return NextResponse.json({ error: 'RIG_EMPTY' }, { status: 400 });
 
-    // Map hardware to Stripe format
+    // 2. CONSTRUCT LINE ITEMS
     const lineItems = items.map((item) => ({
       price_data: {
         currency: 'usd',
         product_data: {
           name: item.name,
           images: item.imageUrl ? [item.imageUrl] : [],
-          metadata: {
-            productId: item.id,
-          },
+          metadata: { productId: item.id },
         },
-        unit_amount: Math.round(item.price * 100), // Stripe uses cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: 1,
     }));
 
+    // 3. GENERATE SESSION WITH OPERATIVE LINK
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
+      client_reference_id: user?.id || undefined, // OFFICIAL LINK TO OPERATIVE
       success_url: `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/catalog`,
       metadata: {
-        hardware_keys: items.map(i => i.id).join(','),
+        userId: user?.id || null, // Redundant but safe for metadata filtering
       },
     });
 
