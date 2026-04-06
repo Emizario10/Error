@@ -27,7 +27,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
       {/* ACTION_BAR */}
       <div className="flex justify-between items-center border-b border-white/5 pb-8">
         <div className="flex flex-col">
-          <span className="text-[#CCFF00] font-mono text-[10px] tracking-[0.4em] uppercase">
+          <span className="text-tactical font-mono text-[10px] tracking-[0.4em] uppercase">
             Live.Data.Stream
           </span>
           <h3 className="text-xl font-bold text-white uppercase tracking-tight">
@@ -55,7 +55,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
             <div 
               key={order.id}
               className={`bg-black border transition-all duration-500 ${
-                expandedId === order.id ? 'border-[#CCFF00]/40' : 'border-white/5 hover:border-white/10'
+                expandedId === order.id ? 'border-tactical/40' : 'border-white/5 hover:border-white/10'
               }`}
             >
               {/* ORDER_ROW_HEADER */}
@@ -73,7 +73,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                   
                   <div className="flex flex-col">
                     <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">PAYLOAD_VALUE</span>
-                    <span className="text-xs font-bold text-[#CCFF00]">
+                    <span className="text-xs font-bold text-tactical">
                       ${order.totalAmount.toFixed(2)}
                     </span>
                   </div>
@@ -81,7 +81,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                   <div className="flex flex-col">
                     <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">STATUS_LOG</span>
                     <span className={`text-[10px] font-black uppercase tracking-widest ${
-                      order.status === 'COMPLETED' ? 'text-[#CCFF00]' : 'text-[#FF3131]'
+                      order.status === 'COMPLETED' ? 'text-tactical' : 'text-[#FF3131]'
                     }`}>
                       {order.status}
                     </span>
@@ -106,7 +106,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     {/* Item List */}
                     <div className="space-y-4">
-                      <span className="text-[8px] font-mono text-[#CCFF00] uppercase tracking-[0.4em] mb-4 block">
+                      <span className="text-[8px] font-mono text-tactical uppercase tracking-[0.4em] mb-4 block">
                         Hardware_Manifest
                       </span>
                       {order.items.map((item: any) => (
@@ -120,7 +120,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                             <h4 className="text-[10px] font-bold text-white uppercase">{item.product?.name || 'Unknown'}</h4>
                             <div className="flex justify-between mt-1">
                               <span className="text-[9px] font-mono text-white/30 uppercase">QTY: {item.quantity}</span>
-                              <span className="text-[9px] font-mono text-[#CCFF00]">${item.unitPrice.toFixed(2)}</span>
+                              <span className="text-[9px] font-mono text-tactical">${item.unitPrice.toFixed(2)}</span>
                             </div>
                           </div>
                         </div>
@@ -130,7 +130,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                     {/* Metadata Intel */}
                     <div className="flex flex-col justify-between">
                       <div className="space-y-4">
-                        <span className="text-[8px] font-mono text-[#CCFF00] uppercase tracking-[0.4em] mb-4 block">
+                        <span className="text-[8px] font-mono text-tactical uppercase tracking-[0.4em] mb-4 block">
                           Transaction_Intel
                         </span>
                         <div className="p-4 border border-white/5 font-mono text-[9px] text-white/40 space-y-2 uppercase leading-loose">
@@ -140,7 +140,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
                         </div>
                       </div>
                       
-                      <button className="mt-8 flex items-center gap-2 text-[9px] font-mono text-white/20 hover:text-[#CCFF00] transition-colors uppercase tracking-widest">
+                      <button className="mt-8 flex items-center gap-2 text-[9px] font-mono text-white/20 hover:text-tactical transition-colors uppercase tracking-widest">
                         <ExternalLink size={12} />
                         View on Stripe Dashboard
                       </button>

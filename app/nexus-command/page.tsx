@@ -28,9 +28,9 @@ export default async function NexusCommandPage() {
     : 100;
 
   const metrics = [
-    { label: 'TOTAL_REVENUE', value: `$${totalRevenue.toFixed(2)}`, icon: TrendingUp, color: 'text-[#CCFF00]' },
+    { label: 'TOTAL_REVENUE', value: `$${totalRevenue.toFixed(2)}`, icon: TrendingUp, color: 'text-tactical' },
     { label: 'TOTAL_EXTRACTIONS', value: allOrders.length.toString(), icon: Package, color: 'text-white' },
-    { label: 'VAULT_HEALTH', value: `${successRate.toFixed(1)}%`, icon: ShieldCheck, color: 'text-[#CCFF00]' },
+    { label: 'VAULT_HEALTH', value: `${successRate.toFixed(1)}%`, icon: ShieldCheck, color: 'text-tactical' },
     { label: 'SYSTEM_LOAD', value: 'OPTIMAL', icon: Activity, color: 'text-white/40' },
   ];
 
@@ -41,27 +41,27 @@ export default async function NexusCommandPage() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* DASHBOARD_HEADER */}
-        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-[#CCFF00] pl-8">
+        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-tactical pl-8">
           <div>
             <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">
               NEXUS_COMMAND
             </h2>
-            <p className="font-mono text-[11px] text-[#CCFF00] tracking-[0.6em] uppercase opacity-80 mt-2">
+            <p className="font-mono text-[11px] text-tactical tracking-[0.6em] uppercase opacity-80 mt-2">
               [ ADMINISTRATIVE_VAULT // NODE: 0x77AF ]
             </p>
           </div>
           
           <div className="flex gap-4 font-mono text-[9px] text-white/20 uppercase tracking-widest">
             <span>Uptime: 99.99%</span>
-            <span className="text-[#CCFF00] animate-pulse">● System_Live</span>
+            <span className="text-tactical animate-pulse">● System_Live</span>
           </div>
         </div>
 
         {/* GLOBAL_METRICS_GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {metrics.map((m, i) => (
-            <div key={i} className="bg-[#050505] border border-white/5 p-8 flex flex-col gap-4 group hover:border-[#CCFF00]/20 transition-all duration-500">
-              <div className="flex justify-between items-start text-white/20 group-hover:text-[#CCFF00]/40 transition-colors">
+            <div key={i} className="bg-[#050505] border border-white/5 p-8 flex flex-col gap-4 group hover:border-tactical/20 transition-all duration-500">
+              <div className="flex justify-between items-start text-white/20 group-hover:text-tactical/40 transition-colors">
                 <m.icon size={20} strokeWidth={1.5} />
                 <span className="text-[8px] font-mono tracking-widest uppercase">Metric_{i+1}</span>
               </div>

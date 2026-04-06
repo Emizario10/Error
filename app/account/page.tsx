@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LogoutButton from '@/components/LogoutButton';
 import { Package, Clock } from 'lucide-react';
+import ThemeProvider from '@/components/ThemeProvider';
+import OpticsCalibration from './OpticsCalibration';
 
 /**
  * ACCOUNT_PAGE: Operator Dashboard (Hardened).
@@ -51,28 +53,33 @@ export default async function AccountPage() {
 
   return (
     <div className="min-h-screen bg-black pt-32 pb-20 px-8 lg:px-20 relative overflow-hidden">
+      <ThemeProvider initialColor={profile.customColor} />
+      
       {/* CRT SCANLINE EFFECT */}
       <div className="absolute inset-0 pointer-events-none z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] bg-[length:100%_3px,3px_100%] opacity-20" />
 
       <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         
         {/* OPERATIVE_HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-[#CCFF00] pl-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-tactical pl-8">
           <div>
-            <span className="text-[#CCFF00] font-mono text-[10px] tracking-[0.6em] uppercase opacity-50 block mb-2">
+            <span className="text-tactical font-mono text-[10px] tracking-[0.6em] uppercase opacity-50 block mb-2">
               Operator.Status // Established
             </span>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">
-              OPERATOR_DASHBOARD // <span className="text-[#CCFF00]">{profile.username}</span>
+              OPERATOR_DASHBOARD // <span className="text-tactical">{profile.username}</span>
             </h1>
           </div>
           <LogoutButton />
         </div>
 
+        {/* CALIBRATION SECTION */}
+        <OpticsCalibration currentSelection={profile.customColor} />
+
         {/* METRICS_GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-[#050505] border border-white/5 p-8 flex items-center gap-6">
-            <div className="p-4 bg-[#CCFF00]/5 border border-[#CCFF00]/20 rounded-full text-[#CCFF00]">
+            <div className="p-4 bg-tactical/5 border border-tactical/20 rounded-full text-tactical">
               <Package size={24} strokeWidth={1.5} />
             </div>
             <div>
@@ -82,7 +89,7 @@ export default async function AccountPage() {
           </div>
 
           <div className="bg-[#050505] border border-white/5 p-8 flex items-center gap-6">
-            <div className="p-4 bg-[#CCFF00]/5 border border-[#CCFF00]/20 rounded-full text-[#CCFF00]">
+            <div className="p-4 bg-tactical/5 border border-tactical/20 rounded-full text-tactical">
               <Clock size={24} strokeWidth={1.5} />
             </div>
             <div>
@@ -119,7 +126,7 @@ export default async function AccountPage() {
                 ) : (
                   profile.orders.map((order) => (
                     <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
-                      <td className="px-8 py-6 text-white/60 group-hover:text-[#CCFF00] transition-colors">
+                      <td className="px-8 py-6 text-white/60 group-hover:text-tactical transition-colors">
                         {order.id.split('-')[0]}...{order.id.split('-').pop()}
                       </td>
                       <td className="px-8 py-6 text-white/40">
@@ -131,7 +138,7 @@ export default async function AccountPage() {
                       <td className="px-8 py-6 text-right">
                         <span className={`px-3 py-1 rounded-full text-[8px] font-black tracking-[0.2em] ${
                           order.status === 'COMPLETED' 
-                            ? 'bg-[#CCFF00]/10 text-[#CCFF00] border border-[#CCFF00]/20' 
+                            ? 'bg-tactical/10 text-tactical border border-tactical/20' 
                             : 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'
                         }`}>
                           {order.status === 'COMPLETED' ? 'SHIPPED' : 'PROCESSING'}

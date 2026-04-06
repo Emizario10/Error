@@ -39,8 +39,8 @@ export default function SuccessPage() {
 
       {/* Visual Hub */}
       <div className="z-10 w-full max-w-xl">
-        <div className="w-20 h-20 border-2 border-[#CCFF00] rounded-full flex items-center justify-center mx-auto mb-12 shadow-[0_0_30px_#CCFF00]">
-           <div className="w-10 h-10 bg-[#CCFF00] rounded-full animate-ping" />
+        <div className="w-20 h-20 border-2 border-tactical rounded-full flex items-center justify-center mx-auto mb-12 shadow-[0_0_30px_var(--tactical-color)]">
+           <div className="w-10 h-10 bg-tactical rounded-full animate-ping" />
         </div>
 
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8">
@@ -48,7 +48,7 @@ export default function SuccessPage() {
         </h1>
 
         {/* Terminal Feedback */}
-        <pre className="font-mono text-[10px] md:text-xs text-[#CCFF00] bg-black/80 backdrop-blur-md p-8 border border-white/10 text-left mb-12 h-32 overflow-hidden leading-relaxed uppercase tracking-widest whitespace-pre-wrap">
+        <pre className="font-mono text-[10px] md:text-xs text-tactical bg-black/80 backdrop-blur-md p-8 border border-white/10 text-left mb-12 h-32 overflow-hidden leading-relaxed uppercase tracking-widest whitespace-pre-wrap">
           {text}
           <span className="animate-pulse">_</span>
         </pre>

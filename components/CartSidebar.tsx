@@ -42,14 +42,14 @@ export default function CartSidebar() {
             {/* Header */}
             <div className="p-8 border-b border-[#222] flex items-center justify-between">
               <div>
-                <span className="text-[#CCFF00] font-mono text-[10px] tracking-[0.5em] uppercase opacity-50">
+                <span className="text-tactical font-mono text-[10px] tracking-[0.5em] uppercase opacity-50">
                   Nexus.Inventory
                 </span>
                 <h2 className="text-2xl font-black text-white uppercase tracking-tight">
                   CART_COMMAND
                 </h2>
               </div>
-              <button onClick={toggleCart} className="text-white/40 hover:text-[#CCFF00] transition-colors">
+              <button onClick={toggleCart} className="text-white/40 hover:text-tactical transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -73,7 +73,7 @@ export default function CartSidebar() {
                     <div className="flex-grow flex flex-col justify-center">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-xs font-bold text-white uppercase tracking-wider">{item.name}</h4>
-                        <span className="text-xs font-mono text-[#CCFF00]">${item.price.toFixed(2)}</span>
+                        <span className="text-xs font-mono text-tactical">${item.price.toFixed(2)}</span>
                       </div>
                       <button 
                         onClick={() => removeItem(item.id)}
@@ -91,7 +91,7 @@ export default function CartSidebar() {
             <div className="p-10 border-t border-[#222] bg-black">
               <div className="flex justify-between items-end mb-8">
                 <span className="text-xs font-mono text-white/30 uppercase tracking-[0.3em]">Total_Payload</span>
-                <span className="text-3xl font-black text-[#CCFF00] tracking-tighter">
+                <span className="text-3xl font-black text-tactical tracking-tighter">
                   ${totalPrice().toFixed(2)}
                 </span>
               </div>

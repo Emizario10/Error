@@ -97,8 +97,8 @@ export default function RegisterPage() {
       {/* LEFT PANEL: INTEL */}
       <div className="hidden md:flex md:w-1/2 bg-[#050505] border-r border-white/5 flex-col justify-between p-12 relative">
         <div className="space-y-8 relative z-10">
-          <div className="border-l-2 border-[#CCFF00] pl-6">
-            <h2 className="text-sm font-mono text-[#CCFF00] tracking-[0.5em] uppercase">
+          <div className="border-l-2 border-tactical pl-6">
+            <h2 className="text-sm font-mono text-tactical tracking-[0.5em] uppercase">
               {activeUser ? 'Identity.Found' : 'Enrollment.Protocol'}
             </h2>
             <p className="text-[10px] font-mono text-white/30 uppercase mt-2">
@@ -107,11 +107,11 @@ export default function RegisterPage() {
           </div>
           <div className="space-y-4 font-mono text-[9px] text-white/20 uppercase leading-loose tracking-widest">
             {activeUser ? (
-              <p className="text-[#CCFF00]">[ ALERT ] Supabase identity confirmed. Missing Prisma Profile. Sync required.</p>
+              <p className="text-tactical">[ ALERT ] Supabase identity confirmed. Missing Prisma Profile. Sync required.</p>
             ) : (
               <p>[ DATA_LINK ] Generating unique operative hash...</p>
             )}
-            <p className="text-[#CCFF00]/40">[ ARSENAL ] Linking hardware extraction rights...</p>
+            <p className="text-tactical/40">[ ARSENAL ] Linking hardware extraction rights...</p>
             <p>[ AUTH ] Establishing 256-bit encryption tunnel...</p>
           </div>
         </div>
@@ -131,19 +131,19 @@ export default function RegisterPage() {
               <input 
                 required type="text" placeholder="CODENAME_IDENTITY..."
                 value={username} onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-[#CCFF00] focus:outline-none focus:border-[#CCFF00] uppercase tracking-widest"
+                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-tactical focus:outline-none focus:border-tactical uppercase tracking-widest"
               />
               {!activeUser && (
                 <>
                   <input 
                     required type="email" placeholder="EMAIL_IDENTITY..."
                     value={email} onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-[#CCFF00] focus:outline-none focus:border-[#CCFF00] uppercase tracking-widest"
+                    className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-tactical focus:outline-none focus:border-tactical uppercase tracking-widest"
                   />
                   <input 
                     required type="password" placeholder="SECURITY_CIPHER..."
                     value={password} onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-[#CCFF00] focus:outline-none focus:border-[#CCFF00] uppercase tracking-widest"
+                    className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-tactical focus:outline-none focus:border-tactical uppercase tracking-widest"
                   />
                 </>
               )}

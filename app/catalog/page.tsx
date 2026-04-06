@@ -13,11 +13,11 @@ export default async function CatalogPage() {
   return (
     <div className="min-h-screen bg-[#000000] pt-32 pb-20 px-6 lg:px-20 relative overflow-hidden">
       {/* Header Panel */}
-      <div className="mb-20 border-l-4 border-[#CCFF00] pl-8">
+      <div className="mb-20 border-l-4 border-tactical pl-8">
         <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-4">
           ARSENAL_STOCK
         </h2>
-        <p className="font-mono text-[11px] text-[#CCFF00] tracking-[0.6em] uppercase opacity-90">
+        <p className="font-mono text-[11px] text-tactical tracking-[0.6em] uppercase opacity-90">
           [ DEPLOYABLE_HARDWARE // PROTOCOL: ONLINE ]
         </p>
       </div>
@@ -25,7 +25,7 @@ export default async function CatalogPage() {
       {/* Deployment Grid */}
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-48 border border-dashed border-[#222]">
-          <span className="text-[#CCFF00] font-mono text-sm tracking-[0.8em] uppercase animate-pulse">
+          <span className="text-tactical font-mono text-sm tracking-[0.8em] uppercase animate-pulse">
             SYS.WARN: NO DEPLOYMENTS FOUND IN ARSENAL.
           </span>
           <p className="text-white/20 text-[10px] mt-6 font-mono tracking-widest uppercase">
@@ -37,7 +37,7 @@ export default async function CatalogPage() {
           {products.map((p) => (
             <div 
               key={p.id} 
-              className="group relative flex flex-col bg-black border border-white/5 transition-all duration-700 hover:border-[#CCFF00]/40"
+              className="group relative flex flex-col bg-black border border-white/5 transition-all duration-700 hover:border-tactical/40"
             >
               {/* Product Frame: 4:5 Aspect Ratio */}
               <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#050505]">
@@ -59,8 +59,8 @@ export default async function CatalogPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                 
                 {/* Tactical Category Tag */}
-                <div className="absolute top-6 left-6 px-3 py-1 border border-[#CCFF00]/40 bg-black/80 backdrop-blur-md">
-                   <span className="text-[9px] font-mono text-[#CCFF00] tracking-[0.3em] uppercase font-bold">
+                <div className="absolute top-6 left-6 px-3 py-1 border border-tactical/40 bg-black/80 backdrop-blur-md">
+                   <span className="text-[9px] font-mono text-tactical tracking-[0.3em] uppercase font-bold">
                     {p.category || 'GENERIC'}
                    </span>
                 </div>
@@ -69,7 +69,7 @@ export default async function CatalogPage() {
               {/* Hardware Specifications Panel */}
               <div className="p-8 flex flex-col flex-grow border-t border-white/5">
                 <div className="flex justify-between items-baseline mb-6">
-                  <h3 className="text-xl font-bold text-white uppercase tracking-tight group-hover:text-[#CCFF00] transition-colors duration-500">
+                  <h3 className="text-xl font-bold text-white uppercase tracking-tight group-hover:text-tactical transition-colors duration-500">
                     {p.name}
                   </h3>
                   <span className="font-mono text-sm text-[#F3F4F6] font-black tracking-tight">
@@ -87,7 +87,7 @@ export default async function CatalogPage() {
               </div>
 
               {/* Tech Corner Accent */}
-              <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-[#CCFF00] opacity-0 group-hover:opacity-100 transition-all duration-500 scale-50 group-hover:scale-100" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-tactical opacity-0 group-hover:opacity-100 transition-all duration-500 scale-50 group-hover:scale-100" />
             </div>
           ))}
         </div>

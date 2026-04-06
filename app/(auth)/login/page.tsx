@@ -57,16 +57,16 @@ export default function LoginPage() {
       {/* LEFT: SYSTEM STATUS DATA-STREAM */}
       <div className="hidden md:flex md:w-1/2 bg-[#050505] border-r border-white/5 flex-col justify-between p-12 relative">
         <div className="space-y-8 relative z-10">
-          <div className="border-l-2 border-[#CCFF00] pl-6">
-            <h2 className="text-sm font-mono text-[#CCFF00] tracking-[0.5em] uppercase">Auth.Link</h2>
+          <div className="border-l-2 border-tactical pl-6">
+            <h2 className="text-sm font-mono text-tactical tracking-[0.5em] uppercase">Auth.Link</h2>
             <p className="text-[10px] font-mono text-white/30 uppercase mt-2">KROM_OS // NODE_0x77AF</p>
           </div>
           
           <div className="space-y-4 font-mono text-[9px] text-white/20 uppercase leading-loose tracking-widest">
-            <p className="text-[#CCFF00]/40">[ AUTH_LINK ] Establishing secure connection...</p>
+            <p className="text-tactical/40">[ AUTH_LINK ] Establishing secure connection...</p>
             <p>[ 0.0122s ] Bypassing standard firewalls...</p>
             <p>[ 0.0455s ] Validating operative credentials...</p>
-            <p className="text-[#CCFF00]/40">[ 0.0891s ] Decrypting personal vault: STANDBY</p>
+            <p className="text-tactical/40">[ 0.0891s ] Decrypting personal vault: STANDBY</p>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm space-y-12 relative z-10">
           <div className="space-y-2">
             <h1 className="text-4xl font-black text-white uppercase tracking-tighter">OPERATIVE_LOGIN</h1>
-            <p className="font-mono text-[10px] text-[#CCFF00] tracking-[0.3em] uppercase opacity-60">
+            <p className="font-mono text-[10px] text-tactical tracking-[0.3em] uppercase opacity-60">
               [ ENTER_VAULT_IDENTIFIER ]
             </p>
           </div>
@@ -92,12 +92,12 @@ export default function LoginPage() {
               <input 
                 required type="email" placeholder="EMAIL_IDENTITY..."
                 value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-[#CCFF00] placeholder:text-white/10 focus:outline-none focus:border-[#CCFF00] transition-all uppercase tracking-widest"
+                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-tactical placeholder:text-white/10 focus:outline-none focus:border-tactical transition-all uppercase tracking-widest"
               />
               <input 
                 required type="password" placeholder="SECURITY_CIPHER..."
                 value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-[#CCFF00] placeholder:text-white/10 focus:outline-none focus:border-[#CCFF00] transition-all uppercase tracking-widest"
+                className="w-full bg-transparent border-b border-white/10 p-3 font-mono text-xs text-tactical placeholder:text-white/10 focus:outline-none focus:border-tactical transition-all uppercase tracking-widest"
               />
             </div>
 
@@ -107,7 +107,7 @@ export default function LoginPage() {
                   ERR: {error}
                 </span>
                 {error.includes('NOT_VERIFIED') && (
-                  <Link href="/verify-email" className="text-[8px] font-mono text-white/40 hover:text-[#CCFF00] uppercase underline tracking-widest transition-colors">
+                  <Link href="/verify-email" className="text-[8px] font-mono text-white/40 hover:text-tactical uppercase underline tracking-widest transition-colors">
                     [ ACCESS_VERIFICATION_PORTAL ]
                   </Link>
                 )}
@@ -117,7 +117,7 @@ export default function LoginPage() {
             <div className="space-y-6">
               <GlitchButton text={loading ? "DECRYPTING..." : "AUTHENTICATE"} className="w-full py-4" />
               <div className="flex justify-between items-center px-2">
-                <Link href="/register" className="text-[9px] font-mono text-white/30 hover:text-[#CCFF00] uppercase tracking-widest transition-colors">
+                <Link href="/register" className="text-[9px] font-mono text-white/30 hover:text-tactical uppercase tracking-widest transition-colors">
                   [ NEW_OPERATIVE? ENROLL_HERE ]
                 </Link>
                 <span className="text-[9px] font-mono text-white/10 uppercase tracking-[0.5em]">KROM.SYS_v2.4</span>

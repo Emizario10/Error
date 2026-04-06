@@ -3,50 +3,56 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-space-mono);
+  
+  /* Dynamic Tactical Theme Mapping */
+  --color-tactical: var(--tactical-color, #CCFF00);
 }
 
 :root {
   --background: #000000;
   --foreground: #f3f4f6;
-  --acid-green: #ccff00;
+  --tactical-color: #CCFF00; /* Default Acid Green */
   --infra-red: #ff003c;
 }
 
-/* Custom Cyber-Noir Utilities */
 @layer base {
   body {
-    @apply bg-[#000000] text-[#f3f4f6] antialiased selection:bg-[#ccff00] selection:text-black;
+    @apply bg-[#000000] text-[#f3f4f6] antialiased selection:bg-tactical selection:text-black;
     overflow-x: hidden;
   }
 }
 
 @layer components {
-  .glow-pulse {
-    box-shadow: 0 0 15px rgba(204, 255, 0, 0.2);
+  /* Dynamic Pulsing Glow based on Tactical Color */
+  .glow-pulse-tactical {
+    box-shadow: 0 0 15px var(--tactical-color);
     animation: glow-pulse 2s infinite ease-in-out;
   }
 
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 15px rgba(204, 255, 0, 0.2); }
-    50% { box-shadow: 0 0 25px rgba(204, 255, 0, 0.4); }
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
   }
 
-  .text-glitch {
-    text-shadow: 2px 0 #ff003c, -2px 0 #00ffff;
+  /* Tech-Noir Scanline */
+  .scanline-overlay {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.02),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.02)
+    );
+    background-size: 100% 3px, 3px 100%;
   }
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: #000;
-}
-::-webkit-scrollbar-thumb {
-  background: #222;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ccff00;
-}
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #222; }
+::-webkit-scrollbar-thumb:hover { background: var(--tactical-color); }

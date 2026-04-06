@@ -38,13 +38,13 @@ export default function CreatePostModal({ onClose, authorId }: { onClose: () => 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
       <div className="w-full max-w-2xl bg-[#050505] border border-[#333] p-10 relative">
-        <button onClick={onClose} className="absolute top-6 right-6 text-white/40 hover:text-[#CCFF00]">
+        <button onClick={onClose} className="absolute top-6 right-6 text-white/40 hover:text-tactical">
           <X size={24} />
         </button>
 
-        <div className="border-l-2 border-[#CCFF00] pl-6 mb-10">
+        <div className="border-l-2 border-tactical pl-6 mb-10">
           <h2 className="text-2xl font-black text-white uppercase tracking-tight">NEW_INTELLIGENCE_ENTRY</h2>
-          <p className="text-[8px] font-mono text-[#CCFF00] tracking-[0.4em] uppercase opacity-60 mt-1">
+          <p className="text-[8px] font-mono text-tactical tracking-[0.4em] uppercase opacity-60 mt-1">
             [ BROADCASTING_TO_UNDERGROUND_GRID ]
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function CreatePostModal({ onClose, authorId }: { onClose: () => 
             <input 
               required type="text" placeholder="REPORT_TITLE..." 
               value={title} onChange={(e) => setTitle(e.target.value)}
-              className="bg-transparent border-b border-white/10 p-2 font-mono text-xs text-[#CCFF00] focus:outline-none focus:border-[#CCFF00] uppercase tracking-widest"
+              className="bg-transparent border-b border-white/10 p-2 font-mono text-xs text-tactical focus:outline-none focus:border-tactical uppercase tracking-widest"
             />
             <select 
               value={category} onChange={(e) => setCategory(e.target.value)}
@@ -77,7 +77,7 @@ export default function CreatePostModal({ onClose, authorId }: { onClose: () => 
             required placeholder="ENTRY_CONTENT_ENCRYPTED_TEXT..." 
             rows={6}
             value={content} onChange={(e) => setContent(e.target.value)}
-            className="w-full bg-[#0a0a0a] border border-white/5 p-4 font-mono text-xs text-white/60 focus:outline-none focus:border-[#CCFF00]/20 uppercase tracking-widest leading-relaxed"
+            className="w-full bg-[#0a0a0a] border border-white/5 p-4 font-mono text-xs text-white/60 focus:outline-none focus:border-tactical/20 uppercase tracking-widest leading-relaxed"
           />
 
           <GlitchButton text={loading ? "TRANSMITTING..." : "PUBLISH_REPORT"} className="w-full" />

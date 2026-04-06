@@ -16,6 +16,7 @@ const config: Config = {
         'neon-acid': '#CCFF00',
         'chrome': '#E8E8E8',
         'cyber-red': '#FF003C',
+        'tactical': 'var(--tactical-color, #CCFF00)',
       },
       fontFamily: {
         sans: ['Oswald', ...defaultTheme.fontFamily.sans],

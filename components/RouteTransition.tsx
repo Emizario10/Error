@@ -43,7 +43,7 @@ export default function RouteTransition({ children }: { children: React.ReactNod
         )
         // Neon flash
         .to(".shard", { 
-          backgroundColor: (i) => i % 2 === 0 ? "#CCFF00" : "#FF003C",
+          backgroundColor: (i) => i % 2 === 0 ? "tactical" : "#FF003C",
           duration: 0.05,
           repeat: 3,
           yoyo: true
@@ -69,7 +69,7 @@ export default function RouteTransition({ children }: { children: React.ReactNod
   const shards = Array.from({ length: 24 }).map((_, i) => (
     <div
       key={i}
-      className="shard absolute bg-black border border-[#CCFF00]/30"
+      className="shard absolute bg-black border border-tactical/30"
       style={{
         width: `${Math.random() * 30 + 10}vw`,
         height: `${Math.random() * 30 + 10}vh`,

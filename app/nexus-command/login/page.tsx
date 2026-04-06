@@ -54,11 +54,11 @@ export default function NexusLoginPage() {
       
       <div className="relative z-10 w-full max-w-sm flex flex-col gap-12">
         {/* PORTAL HEADER */}
-        <div className="space-y-2 border-l-2 border-[#CCFF00] pl-6 text-left">
+        <div className="space-y-2 border-l-2 border-tactical pl-6 text-left">
           <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
             NEXUS_ACCESS
           </h1>
-          <p className="font-mono text-[8px] text-[#CCFF00] tracking-[0.4em] uppercase opacity-60">
+          <p className="font-mono text-[8px] text-tactical tracking-[0.4em] uppercase opacity-60">
             [ ESTABLISHING_ENCRYPTED_SESSION // NODE: 0x77AF ]
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function NexusLoginPage() {
                 placeholder="ADMIN_IDENTITY..."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 p-2 font-mono text-xs text-[#CCFF00] placeholder:text-white/10 focus:outline-none focus:border-[#CCFF00] transition-all tracking-widest uppercase"
+                className="w-full bg-transparent border-b border-white/10 p-2 font-mono text-xs text-tactical placeholder:text-white/10 focus:outline-none focus:border-tactical transition-all tracking-widest uppercase"
               />
             </div>
             
@@ -84,7 +84,7 @@ export default function NexusLoginPage() {
                 placeholder="ENTER_VAULT_PASS..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 p-2 font-mono text-xs text-[#CCFF00] placeholder:text-white/10 focus:outline-none focus:border-[#CCFF00] transition-all tracking-widest uppercase"
+                className="w-full bg-transparent border-b border-white/10 p-2 font-mono text-xs text-tactical placeholder:text-white/10 focus:outline-none focus:border-tactical transition-all tracking-widest uppercase"
               />
               {error && (
                 <p className="absolute -bottom-6 left-0 font-mono text-[8px] text-[#FF003C] tracking-widest uppercase animate-pulse">
@@ -105,7 +105,7 @@ export default function NexusLoginPage() {
            <span className="font-mono text-[6px] text-white tracking-[1em] uppercase">
               Encrypted.Link // established
            </span>
-           <span className="font-mono text-[6px] text-[#CCFF00] animate-pulse">
+           <span className="font-mono text-[6px] text-tactical animate-pulse">
               [ STATUS: READY ]
            </span>
         </div>

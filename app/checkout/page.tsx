@@ -32,10 +32,11 @@ export default function CheckoutPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('EXTRACTION_LINK_FAIL');
+        console.error('EXTRACTION_ERR_DETAILS:', data);
+        throw new Error(data.error || 'EXTRACTION_LINK_FAIL');
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error('EXTRACTION_FAIL:', err);
       setIsProcessing(false);
     }
   }
@@ -46,8 +47,8 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-black pt-40 pb-20 px-8 flex flex-col items-center justify-center">
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="border-l-2 border-[#CCFF00] pl-8 mb-16">
-          <span className="text-[#CCFF00] font-mono text-[10px] tracking-[0.8em] uppercase opacity-50 block mb-2">
+        <div className="border-l-2 border-tactical pl-8 mb-16">
+          <span className="text-tactical font-mono text-[10px] tracking-[0.8em] uppercase opacity-50 block mb-2">
             Order.Validation
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
@@ -63,7 +64,7 @@ export default function CheckoutPage() {
                 <h4 className="text-xs font-bold text-white uppercase tracking-widest">{item.name}</h4>
                 <p className="text-[10px] font-mono text-white/30 uppercase mt-1">[ Hardware_Locked ]</p>
               </div>
-              <span className="font-mono text-sm text-[#CCFF00]">${item.price.toFixed(2)}</span>
+              <span className="font-mono text-sm text-tactical">${item.price.toFixed(2)}</span>
             </div>
           ))}
         </div>
@@ -77,7 +78,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           <div className="text-right">
-             <span className="text-[8px] font-mono text-[#CCFF00] uppercase tracking-widest block mb-1">
+             <span className="text-[8px] font-mono text-tactical uppercase tracking-widest block mb-1">
                 // System_Status
              </span>
              <span className="text-[10px] font-mono text-white/40 uppercase">Ready_For_Extraction</span>

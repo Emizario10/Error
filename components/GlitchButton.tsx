@@ -11,8 +11,8 @@ interface GlitchButtonProps {
 }
 
 /**
- * GLITCH_BUTTON: Refactored for Cyber-Noir Aesthetic
- * Hollow design, Acid Green border, and ambient neon glow.
+ * GLITCH_BUTTON: Refactored for Dynamic Tactical Theme.
+ * High-end button that responds to global accent color changes.
  */
 export default function GlitchButton({ text, onClick, className = "" }: GlitchButtonProps) {
   const container = useRef<HTMLButtonElement>(null);
@@ -22,9 +22,9 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
   const { contextSafe } = useGSAP({ scope: container });
 
   const handleMouseEnter = contextSafe(() => {
+    const tacticalColor = getComputedStyle(document.documentElement).getPropertyValue('--tactical-color').trim();
     const tl = gsap.timeline({ repeat: -1 });
     
-    // High-frequency color flash and fragment shift
     tl.to(container.current, {
       borderColor: '#FF003C', // Infrared flash
       boxShadow: '0 0 25px rgba(255, 0, 60, 0.4)',
@@ -40,7 +40,6 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
       duration: 0.08,
     }, 0);
 
-    // Text jitter
     gsap.to(textRef.current, {
       x: () => (Math.random() - 0.5) * 4,
       y: () => (Math.random() - 0.5) * 2,
@@ -51,12 +50,12 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
   });
 
   const handleMouseLeave = contextSafe(() => {
+    const tacticalColor = getComputedStyle(document.documentElement).getPropertyValue('--tactical-color').trim();
     gsap.killTweensOf([container.current, textRef.current, glitchRef.current]);
     
-    // Reset to base Acid Green hollow state
     gsap.to(container.current, { 
-      borderColor: '#CCFF00', 
-      boxShadow: '0 0 15px rgba(204, 255, 0, 0.2)',
+      borderColor: tacticalColor, 
+      boxShadow: `0 0 15px ${tacticalColor}33`,
       duration: 0.3 
     });
     gsap.to(textRef.current, { x: 0, y: 0, duration: 0.2 });
@@ -69,15 +68,15 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative px-10 py-4 border border-[#CCFF00] bg-transparent transition-all group overflow-hidden ${className}`}
+      className={`relative px-10 py-4 border border-tactical bg-transparent transition-all group overflow-hidden ${className}`}
       style={{
-        boxShadow: '0 0 15px rgba(204, 255, 0, 0.2)',
+        boxShadow: '0 0 15px var(--tactical-color)',
       }}
     >
       {/* Main Text */}
       <span 
         ref={textRef}
-        className="relative z-10 text-[#CCFF00] font-mono font-bold tracking-[0.3em] uppercase text-sm"
+        className="relative z-10 text-tactical font-mono font-bold tracking-[0.3em] uppercase text-sm"
       >
         {text}
       </span>
@@ -91,7 +90,7 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
       </span>
       
       {/* Subtle Scanline Overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(204,255,0,0.05)_50%,transparent_50%)] bg-[length:100%_4px]" />
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(var(--tactical-color)_50%,transparent_50%)] bg-[length:100%_4px] opacity-[0.05]" />
     </button>
   );
 }

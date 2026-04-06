@@ -63,13 +63,13 @@ export default function Navbar() {
       {/* BRANDING_BLOCK */}
       <div className="flex items-center gap-8">
         <Link href="/" className="group flex items-center gap-3">
-          <span className="text-sm font-black tracking-[0.5em] text-[#F3F4F6] transition-all group-hover:text-[#CCFF00]">
+          <span className="text-sm font-black tracking-[0.5em] text-[#F3F4F6] transition-all group-hover:text-tactical">
             KROM.SYS
           </span>
           {user && !loading && (
-            <div className="flex items-center gap-2 px-2 py-0.5 bg-[#CCFF00]/10 border border-[#CCFF00]/20 rounded-sm">
-              <div className="w-1 h-1 bg-[#CCFF00] rounded-full animate-pulse shadow-[0_0_5px_#CCFF00]" />
-              <span className="text-[7px] font-mono text-[#CCFF00] uppercase tracking-widest">System_Online</span>
+            <div className="flex items-center gap-2 px-2 py-0.5 bg-tactical/10 border border-tactical/20 rounded-sm">
+              <div className="w-1 h-1 bg-tactical rounded-full animate-pulse shadow-[0_0_5px_tactical]" />
+              <span className="text-[7px] font-mono text-tactical uppercase tracking-widest">System_Online</span>
             </div>
           )}
         </Link>
@@ -77,8 +77,8 @@ export default function Navbar() {
         {/* PERSISTENT_LINKS (Only shown when not syncing) */}
         {!loading && (
           <div className="hidden md:flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.3em]">
-            <Link href="/catalog" className="text-white/40 hover:text-[#CCFF00] transition-colors">Catalog</Link>
-            <Link href="/underground" className="text-white/40 hover:text-[#CCFF00] transition-colors">Underground</Link>
+            <Link href="/catalog" className="text-white/40 hover:text-tactical transition-colors">Catalog</Link>
+            <Link href="/underground" className="text-white/40 hover:text-tactical transition-colors">Underground</Link>
           </div>
         )}
       </div>
@@ -88,7 +88,7 @@ export default function Navbar() {
         {loading ? (
           /* SYNCING_STATE */
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 border border-[#CCFF00]/30 border-t-[#CCFF00] rounded-full animate-spin" />
+            <div className="w-3 h-3 border border-tactical/30 border-t-[tactical] rounded-full animate-spin" />
             <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.4em] animate-pulse">
               System_Sync...
             </span>
@@ -99,7 +99,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center gap-6 lg:gap-8 font-mono text-[10px] uppercase tracking-[0.3em]">
                 {isAdmin && (
-                  <Link href="/nexus-command" className="text-[#CCFF00] hover:brightness-125 transition-all flex items-center gap-2">
+                  <Link href="/nexus-command" className="text-tactical hover:brightness-125 transition-all flex items-center gap-2">
                     <Zap size={10} />
                     Nexus
                   </Link>
@@ -122,9 +122,9 @@ export default function Navbar() {
             onClick={toggleCart}
             className="relative group p-1"
           >
-            <ShoppingBag className="w-5 h-5 text-[#F3F4F6] group-hover:text-[#CCFF00] transition-colors" />
+            <ShoppingBag className="w-5 h-5 text-[#F3F4F6] group-hover:text-tactical transition-colors" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center bg-[#CCFF00] text-black text-[9px] font-black rounded-full shadow-[0_0_10px_#CCFF00]">
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center bg-tactical text-black text-[9px] font-black rounded-full shadow-[0_0_10px_var(--tactical-color)]">
                 {itemCount}
               </span>
             )}
