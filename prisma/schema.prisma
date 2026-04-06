@@ -27,6 +27,7 @@ model Profile {
   createdAt   DateTime @default(now()) @map("created_at")
 
   orders      Order[]
+  posts       Post[]
 }
 
 model Order {
@@ -50,4 +51,16 @@ model OrderItem {
   productId String   @map("product_id")
   quantity  Int
   unitPrice Float    @map("unit_price")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  image     String?
+  category  String   @default("UNCLASSIFIED")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  author    Profile  @relation(fields: [authorId], references: [id])
+  authorId  String   @map("author_id")
 }

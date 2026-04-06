@@ -3,7 +3,6 @@
 import React, { useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Float, MeshDistortMaterial, Environment, ContactShadows } from '@react-three/drei';
-import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,112 +11,133 @@ import GlitchButton from './GlitchButton';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+
+  // TACTICAL_DEPRECATION_BYPASS
+  // SILENCE THREE.Clock warnings from internal libraries
+  const THREE_ANY = THREE as any;
+  if (!THREE_ANY.Clock || THREE_ANY.Clock.isDeprecated) {
+    try {
+      Object.defineProperty(THREE_ANY, 'Clock', {
+        get: () => THREE_ANY.Timer || function(this: any) {
+          return Object.assign(this, {
+            start: () => {},
+            stop: () => {},
+            getDelta: () => 0,
+            getElapsedTime: () => 0
+          });
+        },
+        configurable: true
+      });
+    } catch (e) {}
+  }
 }
 
-function TacticalParts() {
+function TacticalCore() {
   const p1 = useRef<THREE.Mesh>(null);
   const p2 = useRef<THREE.Mesh>(null);
   const p3 = useRef<THREE.Mesh>(null);
 
   useGSAP(() => {
+    // Animación sincronizada con el scroll del padre
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: "#hero-wrap",
+        trigger: "#hero-main-container", // El contenedor que se queda fijo
         start: "top top",
-        end: "bottom top",
-        scrub: 1.5,
+        end: "+=200%", // Duración de la animación en scroll
+        scrub: 1,
       }
     });
 
-    tl.to(p1.current?.position || {}, { x: 0, y: 0.2, z: 0 }, 0)
-      .to(p2.current?.position || {}, { x: -1.3, y: 0, z: 0 }, 0)
-      .to(p3.current?.position || {}, { x: 1.3, y: 0, z: 0 }, 0);
+    // Ensamblaje de piezas
+    tl.fromTo(p1.current!.position, { y: 8, z: -5 }, { y: 0.2, z: 0 }, 0);
+    tl.fromTo(p2.current!.position, { x: -12, y: -4 }, { x: -1.3, y: 0 }, 0);
+    tl.fromTo(p3.current!.position, { x: 12, y: -4 }, { x: 1.3, y: 0 }, 0);
+    
+    // Rotación final del conjunto
+    tl.to([p1.current!.rotation, p2.current!.rotation, p3.current!.rotation], {
+      y: Math.PI * 2,
+      ease: "none"
+    }, 0.5);
+
   }, []);
 
   return (
     <group>
-      <mesh ref={p1} position={[0, 6, -5]} rotation={[0, 0, 0.2]}>
+      <mesh ref={p1}>
         <boxGeometry args={[3, 0.8, 0.1]} />
-        <MeshDistortMaterial 
-          color="#CCFF00" 
-          speed={4} 
-          distort={0.2} 
-          metalness={1} 
-          roughness={0.05} 
-          emissive="#CCFF00"
-          emissiveIntensity={2}
-        />
+        <MeshDistortMaterial color="#CCFF00" speed={2} distort={0.2} metalness={1} roughness={0.1} />
       </mesh>
-      
-      <mesh ref={p2} position={[-10, -4, 0]} rotation={[0.5, 0, 0.5]}>
+      <mesh ref={p2}>
         <boxGeometry args={[2, 0.3, 0.3]} />
-        <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
+        <meshStandardMaterial color="#1A1A1A" metalness={1} roughness={0.2} />
       </mesh>
-      
-      <mesh ref={p3} position={[10, -4, 0]} rotation={[0.5, 0, -0.5]}>
+      <mesh ref={p3}>
         <boxGeometry args={[2, 0.3, 0.3]} />
-        <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
+        <meshStandardMaterial color="#1A1A1A" metalness={1} roughness={0.2} />
       </mesh>
     </group>
   );
 }
 
 export default function HeroScrollytelling() {
+  const mainRef = useRef(null);
+  const overlayRef = useRef(null);
+
+  useGSAP(() => {
+    // ESTA ES LA CLAVE: Pinning del contenedor
+    ScrollTrigger.create({
+      trigger: "#hero-main-container",
+      start: "top top",
+      end: "+=200%", // Debe coincidir con el final de la animación
+      pin: true,     // Bloquea el elemento en pantalla
+      pinSpacing: true, // Deja el espacio para que el resto del contenido no se solape
+    });
+
+    // Animación de salida del texto (opcional, para que no estorbe al bajar)
+    gsap.to(overlayRef.current, {
+      scrollTrigger: {
+        trigger: "#hero-main-container",
+        start: "70% center",
+        end: "bottom top",
+        scrub: true,
+      },
+      opacity: 0,
+      y: -50,
+    });
+  }, []);
+
   return (
-    <section id="hero-wrap" className="relative w-full h-[200vh] bg-black">
-      <div className="sticky top-0 w-full h-screen overflow-hidden">
-        
-        <div className="absolute inset-0 z-0">
-          <Canvas gl={{ antialias: false, alpha: true }} dpr={[1, 2]}>
-            <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={30} />
-            
-            <ambientLight intensity={0.1} />
-            <pointLight position={[5, 5, 5]} color="#CCFF00" intensity={2} />
-            <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#CCFF00" />
-
-            <Float speed={5} rotationIntensity={0.8} floatIntensity={0.8}>
-              <TacticalParts />
-            </Float>
-
-            {/* HIGH-FIDELITY ENVIRONMENT */}
-            <Environment preset="city" />
-            <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={20} blur={2} far={4.5} />
-
-            {/* CINEMATIC POST-PROCESSING */}
-            <EffectComposer enableNormalPass={false}>
-              <Bloom 
-                luminanceThreshold={1} 
-                mipmapBlur 
-                intensity={1.5} 
-                radius={0.4} 
-              />
-              <Noise opacity={0.05} />
-              <Vignette eskil={false} offset={0.1} darkness={1.1} />
-            </EffectComposer>
-          </Canvas>
-        </div>
-
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4">
-          <span className="text-[#CCFF00] font-mono text-[10px] mb-8 tracking-[1.5em] opacity-60 uppercase">
-            [ Deployment.Established ]
-          </span>
-          
-          <h1 className="text-7xl md:text-9xl font-black text-white uppercase tracking-tighter leading-[0.85] mb-8">
-            HEAVY<br />HARDWARE
-          </h1>
-          
-          <p className="max-w-md text-[11px] text-white/40 font-mono mb-12 uppercase tracking-widest leading-relaxed">
-            Engineered for high-intensity industrial survival. <br />
-            Modular optics and tactical deployment systems.
-          </p>
-
-          <div className="pointer-events-auto">
-            <GlitchButton text="INITIATE_DEPLOYMENT" />
-          </div>
-        </div>
-
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.9)_100%)]" />
+    <section id="hero-main-container" className="relative w-full h-screen bg-black flex items-center justify-center overflow-hidden">
+      
+      {/* 3D CANVAS */}
+      <div className="absolute inset-0 z-0">
+        <Canvas dpr={[1, 2]}>
+          <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={35} />
+          <ambientLight intensity={0.5} />
+          <pointLight position={[5, 5, 5]} color="#CCFF00" intensity={150} />
+          <Environment preset="city" />
+          <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+            <TacticalCore />
+          </Float>
+          <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={20} blur={2} far={4.5} />
+        </Canvas>
       </div>
+
+      {/* TEXT INTERFACE */}
+      <div ref={overlayRef} className="relative z-10 flex flex-col items-center text-center pointer-events-none px-4">
+        <span className="text-[#CCFF00] font-mono text-[10px] tracking-[1.5em] opacity-40 uppercase mb-8 block animate-pulse">
+          [ KROM.SYS // Deployment.Active ]
+        </span>
+        <h1 className="text-6xl md:text-9xl font-black text-white uppercase tracking-tighter leading-[0.85] mb-10">
+          HEAVY<br />HARDWARE
+        </h1>
+        <div className="pointer-events-auto">
+          <GlitchButton text="INITIATE_DEPLOYMENT" />
+        </div>
+      </div>
+
+      {/* Cinematic Vignette */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_30%,#000_100%)]" />
     </section>
   );
 }

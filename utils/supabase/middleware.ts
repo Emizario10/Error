@@ -1,6 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+/**
+ * UPDATE_SESSION: Secure session management for KROM.SYS.
+ * Refactored to prevent 307 redirect loops by preserving cookies on all response types.
+ */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -27,41 +31,50 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // getUser(). A simple mistake could make it very hard to debug
-  // issues with users being logged out.
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const isNexusRoute = request.nextUrl.pathname.startsWith('/nexus-command');
-  const isAccountRoute = request.nextUrl.pathname.startsWith('/account');
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
-  const isLoginPage = request.nextUrl.pathname.includes('/nexus-command/login');
-
-  // Redirect to vault if already authenticated and trying to access login/register
-  if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL('/account', request.url));
+  // 1. Identify current identity
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (e) {
+    console.error('[AUTH_MIDDLEWARE_ERR]:', e);
   }
 
-  if (!user && (isNexusRoute || isAccountRoute) && !isLoginPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = isNexusRoute ? '/nexus-command/login' : '/login'
-    return NextResponse.redirect(url)
+  const { pathname } = request.nextUrl;
+  const isNexusRoute = pathname.startsWith('/nexus-command');
+  const isAccountRoute = pathname.startsWith('/account');
+  const isLoginRoute = pathname.startsWith('/login'); // Solo /login
+  const isRegisterRoute = pathname.startsWith('/register');
+  const isNexusLogin = pathname.includes('/nexus-command/login');
+
+  // 2. Logic: Redirect authenticated operatives away from LOGIN screen only
+  // Permitimos /register porque un usuario logueado en Supabase puede necesitar crear su perfil en Prisma
+  if (user && isLoginRoute) {
+    const url = new URL('/account', request.url);
+    const response = NextResponse.redirect(url);
+    cookiesToSet(supabaseResponse, response);
+    return response;
   }
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
-  // creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally: return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  // 3. Logic: Protect vaults from unauthenticated entities
+  if (!user && (isNexusRoute || isAccountRoute) && !isNexusLogin) {
+    const target = isNexusRoute ? '/nexus-command/login' : '/login';
+    const url = new URL(target, request.url);
+    const response = NextResponse.redirect(url);
+    // CRITICAL: Copy cookies to the new redirect response
+    cookiesToSet(supabaseResponse, response);
+    return response;
+  }
 
-  return supabaseResponse
+  return supabaseResponse;
+}
+
+/**
+ * Helper to sync cookies between responses.
+ * Ensures session persistence during redirects.
+ */
+function cookiesToSet(source: NextResponse, target: NextResponse) {
+  source.cookies.getAll().forEach((cookie) => {
+    target.cookies.set(cookie.name, cookie.value);
+  });
 }

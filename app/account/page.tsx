@@ -3,11 +3,11 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LogoutButton from '@/components/LogoutButton';
-import { Shield, Package, Clock } from 'lucide-react';
+import { Package, Clock } from 'lucide-react';
 
 /**
- * ACCOUNT_PAGE: Operator Dashboard.
- * Protected server-side portal for operative status monitoring.
+ * ACCOUNT_PAGE: Operator Dashboard (Hardened).
+ * Ensures zero-crash redirection for unauthenticated operatives.
  */
 export default async function AccountPage() {
   const cookieStore = await cookies();
@@ -22,11 +22,14 @@ export default async function AccountPage() {
     }
   );
 
-  // 1. AUTH_CHECK: Verify operative session
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/login');
+  // 1. AUTH_VALIDATION: Immediate redirect if no user identity is found
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError || !user) {
+    redirect('/login');
+  }
 
-  // 2. INTEL_FETCH: Retrieve Profile and Order history
+  // 2. PROFILE_EXTRACTION: Verify vault profile exists
   const profile = await prisma.profile.findUnique({
     where: { id: user.id },
     include: {
@@ -37,9 +40,12 @@ export default async function AccountPage() {
     }
   });
 
-  if (!profile) redirect('/register');
+  // If Supabase has the user but Prisma lacks the profile, redirect to enrollment
+  if (!profile) {
+    redirect('/register');
+  }
 
-  // 3. STATS_CALCULATION
+  // 3. TELEMETRY_CALCULATION
   const totalItems = profile.orders.reduce((acc, order) => acc + order.items.length, 0);
   const accountSeniority = Math.floor((new Date().getTime() - new Date(profile.createdAt).getTime()) / (1000 * 60 * 60 * 24));
 
@@ -50,7 +56,7 @@ export default async function AccountPage() {
 
       <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         
-        {/* HEADER */}
+        {/* OPERATIVE_HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-[#CCFF00] pl-8">
           <div>
             <span className="text-[#CCFF00] font-mono text-[10px] tracking-[0.6em] uppercase opacity-50 block mb-2">
@@ -63,7 +69,7 @@ export default async function AccountPage() {
           <LogoutButton />
         </div>
 
-        {/* STATS_BAR */}
+        {/* METRICS_GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-[#050505] border border-white/5 p-8 flex items-center gap-6">
             <div className="p-4 bg-[#CCFF00]/5 border border-[#CCFF00]/20 rounded-full text-[#CCFF00]">
@@ -93,8 +99,8 @@ export default async function AccountPage() {
             <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest font-bold">// vault_sync_active</span>
           </div>
 
-          <div className="bg-[#050505] border border-white/5 overflow-hidden">
-            <table className="w-full text-left font-mono text-[10px] uppercase tracking-widest">
+          <div className="bg-[#050505] border border-white/5 overflow-hidden overflow-x-auto">
+            <table className="w-full text-left font-mono text-[10px] uppercase tracking-widest min-w-[600px]">
               <thead>
                 <tr className="border-b border-white/5 bg-white/5">
                   <th className="px-8 py-4 font-bold text-white/40">Extraction_ID</th>
