@@ -20,28 +20,43 @@ import CyberSkeleton from '@/components/ui/CyberSkeleton';
  * Upgraded to Military Grade with tactical Deltas and Intelligence.
  */
 export default function NexusCommandClient() {
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, error, isError, refetch } = useQuery({
     queryKey: ['nexus-global-data'],
     queryFn: async () => {
       const res = await fetch('/api/admin/nexus-data');
-      if (!res.ok) throw new Error('VAULT_HANDSHAKE_FAILURE');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'VAULT_SYNC_FAILURE');
+      }
       return res.json();
     },
     refetchInterval: 30000, // Background sync every 30s
+    retry: 1,
   });
 
   if (isError) {
+    const errorMessage = (error as Error)?.message || 'VAULT_HANDSHAKE_FAILURE';
+    
     return (
       <div className="py-40 flex flex-col items-center justify-center gap-6">
-        <div className="text-red-500 font-mono text-xs uppercase tracking-[0.5em] animate-pulse">
-          [!] CRITICAL_DATA_LINK_FAILURE
+        <div className="text-red-500 font-mono text-xs uppercase tracking-[0.5em] animate-pulse text-center">
+          [!] CRITICAL_DATA_LINK_FAILURE<br/>
+          <span className="opacity-50 text-[10px] mt-2 block">{errorMessage}</span>
         </div>
-        <button 
-          onClick={() => refetch()}
-          className="border border-white/10 px-8 py-3 font-mono text-[10px] uppercase tracking-widest hover:bg-white/5 transition-all"
-        >
-          [ RE-ESTABLISH_CONNECTION ]
-        </button>
+        <div className="flex gap-4">
+          <button 
+            onClick={() => refetch()}
+            className="border border-white/10 px-8 py-3 font-mono text-[10px] uppercase tracking-widest hover:bg-white/5 transition-all text-white"
+          >
+            [ RE-ESTABLISH_CONNECTION ]
+          </button>
+          <button 
+            onClick={() => window.location.href = '/catalog'}
+            className="border border-tactical/30 px-8 py-3 font-mono text-[10px] uppercase tracking-widest bg-tactical/5 text-tactical hover:bg-tactical/10 transition-all"
+          >
+            [ ABORT_TO_CATALOG ]
+          </button>
+        </div>
       </div>
     );
   }
@@ -78,7 +93,7 @@ export default function NexusCommandClient() {
   ] : [];
 
   return (
-    <div className="max-w-7xl mx-auto relative z-10 animate-in fade-in duration-1000">
+    <div className="max-w-7xl mx-auto relative z-10 animate-in fade-in duration-1000 px-4 md:px-0">
       {data && <AdminAlerts products={data.products} />}
 
       {/* DASHBOARD_HEADER */}
