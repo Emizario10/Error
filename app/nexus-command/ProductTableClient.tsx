@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Edit2, Trash2, RotateCcw, Plus, X } from 'lucide-react';
+import { Edit2, Trash2, RotateCcw, Plus, X, Package } from 'lucide-react';
 
 type ProductRecord = {
   id: string;
@@ -11,6 +11,7 @@ type ProductRecord = {
   currentPrice: number;
   heatLevel: number;
   salesCount: number;
+  stock: number;
   imageUrl?: string | null;
   category?: string | null;
   createdAt: string | Date;
@@ -31,6 +32,7 @@ export default function ProductTableClient({ products: initial }: Props) {
     basePrice: '',
     currentPrice: '',
     heatLevel: '0',
+    stock: '10',
     imageUrl: '',
     category: ''
   });
@@ -42,7 +44,7 @@ export default function ProductTableClient({ products: initial }: Props) {
 
   function handleOpenCreate() {
     setEditingProduct(null);
-    setForm({ name: '', description: '', basePrice: '', currentPrice: '', heatLevel: '0', imageUrl: '', category: '' });
+    setForm({ name: '', description: '', basePrice: '', currentPrice: '', heatLevel: '0', stock: '10', imageUrl: '', category: '' });
     setOpen(true);
   }
 
@@ -54,6 +56,7 @@ export default function ProductTableClient({ products: initial }: Props) {
       basePrice: p.basePrice.toString(),
       currentPrice: p.currentPrice.toString(),
       heatLevel: p.heatLevel.toString(),
+      stock: p.stock.toString(),
       imageUrl: p.imageUrl || '',
       category: p.category || ''
     });
@@ -70,20 +73,17 @@ export default function ProductTableClient({ products: initial }: Props) {
         basePrice: parseFloat(form.basePrice),
         currentPrice: parseFloat(form.currentPrice),
         heatLevel: parseInt(form.heatLevel),
+        stock: parseInt(form.stock),
         imageUrl: form.imageUrl || null,
         category: form.category || null,
       };
 
       const url = editingProduct ? `/api/admin/products/${editingProduct.id}` : '/api/admin/products';
       const method = editingProduct ? 'PATCH' : 'POST';
-
-      // NOTE: POST route expects 'currentPrice' as 'price' in the original implementation, 
-      // but I updated the PATCH route to expect 'currentPrice'. 
-      // I should check POST route again.
       
       const res = await fetch(url, { 
         method, 
-        body: JSON.stringify(editingProduct ? payload : { ...payload, price: payload.currentPrice }) 
+        body: JSON.stringify(payload) 
       });
 
       if (res.ok) {
@@ -138,10 +138,9 @@ export default function ProductTableClient({ products: initial }: Props) {
             <tr className="bg-white/5 border-b border-white/5">
               <th className="p-4 text-white/40">Hardware_Name</th>
               <th className="p-4 text-white/40">Category</th>
-              <th className="p-4 text-white/40">Base_Price</th>
-              <th className="p-4 text-white/40 text-tactical">Current_Price</th>
+              <th className="p-4 text-white/40 text-tactical">Price</th>
               <th className="p-4 text-white/40 text-red-500">Heat</th>
-              <th className="p-4 text-white/40">Sales</th>
+              <th className="p-4 text-white/40 text-blue-400">Stock</th>
               <th className="p-4 text-white/40 text-right">Actions</th>
             </tr>
           </thead>
@@ -150,14 +149,17 @@ export default function ProductTableClient({ products: initial }: Props) {
               <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
                 <td className="p-4 font-bold text-white group-hover:text-tactical transition-colors">{p.name}</td>
                 <td className="p-4 text-white/40">{p.category || 'N/A'}</td>
-                <td className="p-4 text-white/60">${p.basePrice.toFixed(2)}</td>
                 <td className="p-4 text-tactical font-black">${p.currentPrice.toFixed(2)}</td>
                 <td className="p-4">
                   <span className={`px-2 py-0.5 rounded-sm ${p.heatLevel > 2 ? 'bg-red-500/20 text-red-500' : 'bg-white/5 text-white/20'}`}>
                     LVL_{p.heatLevel}
                   </span>
                 </td>
-                <td className="p-4 text-white/40">{p.salesCount}</td>
+                <td className="p-4">
+                  <span className={`flex items-center gap-2 ${p.stock < 2 ? 'text-red-500 animate-pulse font-black' : 'text-blue-400'}`}>
+                    <Package size={10} /> {p.stock}
+                  </span>
+                </td>
                 <td className="p-4 text-right">
                   <div className="flex justify-end gap-2">
                     <button onClick={() => handleOpenEdit(p)} className="p-2 hover:text-tactical transition-colors">
@@ -211,16 +213,30 @@ export default function ProductTableClient({ products: initial }: Props) {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Function_Description</label>
-                  <textarea
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="w-full bg-black border border-white/10 p-3 text-xs font-mono text-white h-24 focus:border-tactical transition-colors"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest text-blue-400">Inventory_Stock</label>
+                    <input
+                      required
+                      type="number"
+                      value={form.stock}
+                      onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-3 text-xs font-mono text-white focus:border-tactical transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest text-red-500">Heat_Level</label>
+                    <input
+                      required
+                      type="number"
+                      value={form.heatLevel}
+                      onChange={(e) => setForm({ ...form, heatLevel: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-3 text-xs font-mono text-white focus:border-tactical transition-colors"
+                    />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Base_Price</label>
                     <input
@@ -240,16 +256,6 @@ export default function ProductTableClient({ products: initial }: Props) {
                       step="0.01"
                       value={form.currentPrice}
                       onChange={(e) => setForm({ ...form, currentPrice: e.target.value })}
-                      className="w-full bg-black border border-white/10 p-3 text-xs font-mono text-white focus:border-tactical transition-colors"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest text-red-500">Heat_Level</label>
-                    <input
-                      required
-                      type="number"
-                      value={form.heatLevel}
-                      onChange={(e) => setForm({ ...form, heatLevel: e.target.value })}
                       className="w-full bg-black border border-white/10 p-3 text-xs font-mono text-white focus:border-tactical transition-colors"
                     />
                   </div>

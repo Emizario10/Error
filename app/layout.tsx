@@ -7,6 +7,7 @@ import CartSidebar from "@/components/CartSidebar";
 import ThemeProvider from "@/components/ThemeProvider";
 import EasterEggListener from "@/components/EasterEggListener";
 import SystemMessage from "@/components/SystemMessage";
+import Providers from "@/components/Providers";
 import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 
@@ -56,5 +57,8 @@ export default async function RootLayout({
         </ThemeProvider>
       </body>
     </html>
+  )
+}
+   </html>
   )
 }

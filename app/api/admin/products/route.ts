@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     // Support both 'price' (legacy) and the new 'basePrice'/'currentPrice'
-    const { name, description, currentPrice, price, imageUrl, category, basePrice } = body;
+    const { name, description, currentPrice, price, imageUrl, category, basePrice, stock } = body;
 
     const finalPrice = currentPrice || price;
     const finalBasePrice = basePrice || finalPrice;
@@ -23,6 +23,7 @@ export async function POST(req: Request) {
         currentPrice: finalPrice,
         imageUrl: imageUrl ?? null,
         category: category ?? null,
+        stock: stock !== undefined ? parseInt(stock) : 10,
       },
     });
 

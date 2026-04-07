@@ -17,6 +17,7 @@ model Product {
   category     String?
   heatLevel    Int      @default(0) @map("heat_level")
   salesCount   Int      @default(0) @map("sales_count")
+  stock        Int      @default(10)
   createdAt    DateTime @default(now()) @map("created_at")
 
   orderItems OrderItem[]
