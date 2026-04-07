@@ -5,7 +5,7 @@ import { prisma } from './prisma';
  * Ensures atomic integrity during concurrent XP gains.
  */
 export async function grantXP(profileId: string, amount: number, type: string) {
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: any) => {
     // 1. LOG_EXTRACTION: Record the XP gain event
     await tx.xPLog.create({
       data: {

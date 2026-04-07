@@ -52,7 +52,7 @@ export default function SystemCorePage() {
 
         {/* Real-time Telemetry */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {coreMetrics.map((m, i) => (
+          {coreMetrics.map((m: any, i: number) => (
             <div key={i} className="bg-[#050505] border border-white/5 p-6 space-y-4">
               <m.icon size={18} className={m.color} />
               <div>

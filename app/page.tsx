@@ -142,7 +142,7 @@ export default function HomePage() {
               { id: '01', title: 'PURE_BRUTALISM', content: 'KROM.SYS rejects the soft. We embrace the industrial, the raw, and the uncompromising.' },
               { id: '02', title: 'FULL_ANONYMITY', content: 'Our optics are engineered for the shadows. 99.9% opacity protocols for operatives.' },
               { id: '03', title: 'URBAN_EVOLUTION', content: 'Tactical deployment gear calibrated for the next urban age. Deploy or be deployed.' }
-            ].map((pillar) => (
+            ].map((pillar: any) => (
               <div key={pillar.id} className="philosophy-pillar space-y-6">
                 <span className="text-tactical font-mono text-[10px] uppercase tracking-[0.5em] font-bold block mb-4">
                   {pillar.id} // {pillar.title}

@@ -66,7 +66,7 @@ export default function RouteTransition({ children }: { children: React.ReactNod
   };
 
   // Generate 20 random shards
-  const shards = Array.from({ length: 24 }).map((_, i) => (
+  const shards = Array.from({ length: 24 }).map((_: any, i: number) => (
     <div
       key={i}
       className="shard absolute bg-black border border-tactical/30"
