@@ -1,15 +1,54 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSystemStore } from '@/store/useSystemStore';
 import { Terminal } from 'lucide-react';
+import { createClient } from '@/utils/supabase/client';
+import { useSearchParams } from 'next/navigation';
 
 /**
  * SYSTEM_MESSAGE: Global tactical notification interface.
+ * Features AI Overseer boot sequence on initial session.
  */
 export default function SystemMessage() {
-  const { messages, removeMessage } = useSystemStore();
+  const { messages, addMessage, removeMessage } = useSystemStore();
+  const hasBooted = useRef(false);
+  const supabase = createClient();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const alert = searchParams.get('system_alert');
+    if (alert) {
+      addMessage(`[!] ${alert.replace(/_/g, ' ')}`, "SECURITY");
+      // Remove param from URL to avoid repeating on refresh
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [searchParams, addMessage]);
+
+  useEffect(() => {
+    if (hasBooted.current) return;
+    hasBooted.current = true;
+
+    // AI OVERSEER: Boot Sequence
+    const triggerBoot = async () => {
+      // Step 1: Init
+      setTimeout(() => addMessage("> INITIALIZING_KROM_OS... [OK]", "INFO"), 1000);
+      
+      // Step 2: Encrypt
+      setTimeout(() => addMessage("> ENCRYPTING_CONNECTION... [OK]", "SECURITY"), 2500);
+      
+      // Step 3: Identity
+      const { data: { user } } = await supabase.auth.getUser();
+      const username = user?.user_metadata?.username || user?.email?.split('@')[0] || "GUEST";
+      
+      setTimeout(() => {
+        addMessage(`> WELCOME_BACK_OPERATIVE_${username.toUpperCase()}.`, "INFO");
+      }, 4000);
+    };
+
+    triggerBoot();
+  }, [addMessage, supabase.auth]);
 
   return (
     <div className="fixed top-24 right-8 z-[9999] flex flex-col gap-4 pointer-events-none w-full max-w-[320px]">

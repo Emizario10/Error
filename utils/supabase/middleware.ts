@@ -37,32 +37,42 @@ export async function updateSession(request: NextRequest) {
     const { data } = await supabase.auth.getUser();
     user = data.user;
   } catch (e) {
-    console.error('[AUTH_MIDDLEWARE_ERR]:', e);
+    // Suppressing noise in production
   }
 
   const { pathname } = request.nextUrl;
   const isNexusRoute = pathname.startsWith('/nexus-command');
   const isAccountRoute = pathname.startsWith('/account');
-  const isLoginRoute = pathname.startsWith('/login'); // Solo /login
-  const isRegisterRoute = pathname.startsWith('/register');
+  const isLoginRoute = pathname.startsWith('/login');
   const isNexusLogin = pathname.includes('/nexus-command/login');
 
-  // 2. Logic: Redirect authenticated operatives away from LOGIN screen only
-  // Permitimos /register porque un usuario logueado en Supabase puede necesitar crear su perfil en Prisma
+  // 2. ADMIN RADIUS: Extreme security for Nexus Command
+  if (isNexusRoute && !isNexusLogin) {
+    const ADMIN_EMAIL = "juanfe13lasso@gmail.com"
+    
+    if (!user || user.email !== ADMIN_EMAIL) {
+      // Redirect to catalog with tactical alert
+      const url = new URL('/catalog', request.url)
+      url.searchParams.set('system_alert', 'ACCESS_DENIED_UNAUTHORIZED_IP_LOGGED')
+      const response = NextResponse.redirect(url)
+      copyCookies(supabaseResponse, response)
+      return response
+    }
+  }
+
+  // 3. Logic: Redirect authenticated operatives away from LOGIN screen
   if (user && isLoginRoute) {
     const url = new URL('/account', request.url);
     const response = NextResponse.redirect(url);
-    cookiesToSet(supabaseResponse, response);
+    copyCookies(supabaseResponse, response);
     return response;
   }
 
-  // 3. Logic: Protect vaults from unauthenticated entities
-  if (!user && (isNexusRoute || isAccountRoute) && !isNexusLogin) {
-    const target = isNexusRoute ? '/nexus-command/login' : '/login';
-    const url = new URL(target, request.url);
+  // 4. Logic: Protect account vault from unauthenticated entities
+  if (!user && isAccountRoute) {
+    const url = new URL('/login', request.url);
     const response = NextResponse.redirect(url);
-    // CRITICAL: Copy cookies to the new redirect response
-    cookiesToSet(supabaseResponse, response);
+    copyCookies(supabaseResponse, response);
     return response;
   }
 
@@ -73,7 +83,7 @@ export async function updateSession(request: NextRequest) {
  * Helper to sync cookies between responses.
  * Ensures session persistence during redirects.
  */
-function cookiesToSet(source: NextResponse, target: NextResponse) {
+function copyCookies(source: NextResponse, target: NextResponse) {
   source.cookies.getAll().forEach((cookie) => {
     target.cookies.set(cookie.name, cookie.value);
   });

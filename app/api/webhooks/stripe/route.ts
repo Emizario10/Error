@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { grantXP } from '@/lib/gamification';
+import { logger } from '@/lib/logger';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20' as any,
@@ -28,14 +29,14 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     
     // CLEAR LOGGING FOR DIAGNOSTICS
-    console.log("SESSION COMPLETED:", session.id);
-    console.log("CLIENT REF ID (UserId):", session.client_reference_id);
+    logger.info("SESSION COMPLETED:", session.id);
+    logger.info("CLIENT REF ID (UserId):", session.client_reference_id);
 
     // USE CLIENT_REFERENCE_ID AS PRIMARY LINK TO OPERATIVE
     const profileId = session.client_reference_id;
 
     if (!profileId) {
-      console.warn("[VAULT_WARN] NO_PROFILE_ID_FOUND_IN_SESSION. ANONYMOUS_ORDER_CREATED.");
+      logger.warn("[VAULT_WARN] NO_PROFILE_ID_FOUND_IN_SESSION. ANONYMOUS_ORDER_CREATED.");
     }
 
     try {
@@ -108,14 +109,14 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`--- [ EXTRACTION_LOCKED_TO_PROFILE: ${profileId || 'ANONYMOUS'} ] ---`);
-      console.log(`VAULT_ID: ${order.id}`);
-      console.log(`ECONOMY_UPDATED: ${orderItemsData.length} ITEMS PROCESSED`);
+      logger.info(`--- [ EXTRACTION_LOCKED_TO_PROFILE: ${profileId || 'ANONYMOUS'} ] ---`);
+      logger.info(`VAULT_ID: ${order.id}`);
+      logger.info(`ECONOMY_UPDATED: ${orderItemsData.length} ITEMS PROCESSED`);
 
       // 6. GRANT_XP: Reward the operative for the extraction
       if (profileId) {
         const updatedProfile = await grantXP(profileId, 50, "PURCHASE");
-        console.log(`[IDENTITY_PROMOTED] XP_GRANTED: 50 | TOTAL_XP: ${updatedProfile.xp} | CLEARANCE: L${updatedProfile.clearanceLevel}`);
+        logger.info(`[IDENTITY_PROMOTED] XP_GRANTED: 50 | TOTAL_XP: ${updatedProfile.xp} | CLEARANCE: L${updatedProfile.clearanceLevel}`);
       }
       
     } catch (dbErr: any) {
@@ -126,3 +127,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ received: true });
 }
+

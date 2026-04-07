@@ -71,12 +71,12 @@ export default function ProductCard({ product: p, clearanceLevel }: ProductCardP
         {/* Heat Badges */}
         <div className="absolute top-6 right-6 z-20">
           {isHighHeat && (
-            <span className="text-[7px] font-mono text-[#FF3131] border border-[#FF3131]/30 bg-black/80 px-2 py-0.5 tracking-tighter font-bold">
+            <span className="text-[7px] font-mono text-[#FF3131] border border-[#FF3131]/30 bg-black/80 px-2 py-0.5 tracking-tighter font-bold animate-pulse">
               [ ▲ HIGH_HEAT ]
             </span>
           )}
           {isSurplus && (
-            <span className="text-[7px] font-mono text-[#CCFF00] border border-[#CCFF00]/30 bg-black/80 px-2 py-0.5 tracking-tighter font-bold">
+            <span className="text-[7px] font-mono text-[#CCFF00] border border-[#CCFF00]/30 bg-black/80 px-2 py-0.5 tracking-tighter font-bold animate-pulse">
               [ ▼ SURPLUS ]
             </span>
           )}

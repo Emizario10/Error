@@ -57,7 +57,6 @@ export default function RegisterPage() {
       if (!userId) throw new Error("ENROLLMENT_LINK_FAILED");
 
       // 2. VAULT_SYNC: Ensure Prisma record exists
-      // We run this even if email isn't confirmed yet to prepare the profile
       const profileRes = await fetch('/api/profile/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +68,8 @@ export default function RegisterPage() {
 
       if (!profileRes.ok) {
         const errorData = await profileRes.json();
-        throw new Error(`VAULT_SYNC_FAILURE: ${errorData.error || 'CONTACT_NEXUS'}`);
+        // Display the specialized message (e.g., IDENTITY_COLLISION) if available
+        throw new Error(errorData.message || `VAULT_SYNC_FAILURE: ${errorData.error || 'CONTACT_NEXUS'}`);
       }
 
       // 3. COMPLETE OR VERIFY
