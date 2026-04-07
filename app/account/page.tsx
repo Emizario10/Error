@@ -57,7 +57,7 @@ export default async function AccountPage() {
   }
 
   // 3. TELEMETRY_CALCULATION
-  const totalItems = profile.orders.reduce((acc, order) => acc + order.items.length, 0);
+  const totalItems = profile.orders.reduce((acc: number, order: any) => acc + order.items.length, 0);
   const accountSeniority = Math.floor((new Date().getTime() - new Date(profile.createdAt).getTime()) / (1000 * 60 * 60 * 24));
 
   return (
