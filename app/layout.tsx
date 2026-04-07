@@ -44,21 +44,20 @@ export default async function RootLayout({
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${oswald.variable} ${spaceMono.variable} bg-black text-[#F3F4F6] font-sans antialiased`}>
         <ThemeProvider initialColor={fetchedColor}>
-          {/* Global Frame */}
-          <Navbar />
-          <CartSidebar />
-          <EasterEggListener />
-          <SystemMessage />
-          
-          {/* Main Content */}
-          <main className="relative pt-16">
-            {children}
-          </main>
+          <Providers>
+            {/* Global Frame */}
+            <Navbar />
+            <CartSidebar />
+            <EasterEggListener />
+            <SystemMessage />
+            
+            {/* Main Content */}
+            <main className="relative pt-16">
+              {children}
+            </main>
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
-  )
-}
-   </html>
   )
 }
