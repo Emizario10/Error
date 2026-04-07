@@ -3,6 +3,7 @@ import OrderFeedClient from './OrderFeedClient';
 import ProductTableClient from './ProductTableClient';
 import OperativeTable from './OperativeTable';
 import LogFeed from './LogFeed';
+import IntelligenceDashboard from './IntelligenceDashboard';
 import { Package, TrendingUp, ShieldCheck, Activity, Users, Database, Terminal as TerminalIcon } from 'lucide-react';
 import NexusTabs from './NexusTabs';
 
@@ -50,7 +51,7 @@ export default async function NexusCommandPage() {
   return (
     <div className="min-h-screen bg-black pt-32 pb-20 px-8 lg:px-20 relative overflow-hidden">
       {/* CRT_SCANLINE_EFFECT */}
-      <div className="absolute inset-0 pointer-events-none z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_3px,3px_100%] opacity-20" />
+      <div className="absolute inset-0 pointer-events-none z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] bg-[length:100%_3px,3px_100%] opacity-20" />
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* DASHBOARD_HEADER */}
@@ -92,6 +93,7 @@ export default async function NexusCommandPage() {
 
         {/* TABS_SYSTEM */}
         <NexusTabs 
+          intelligenceTab={<IntelligenceDashboard />}
           ordersTab={<OrderFeedClient orders={orders} />}
           productsTab={<ProductTableClient products={products} />}
           operativesTab={<OperativeTable profiles={profiles} />}

@@ -8,12 +8,14 @@ interface Props {
   productsTab: React.ReactNode;
   operativesTab: React.ReactNode;
   logsTab: React.ReactNode;
+  intelligenceTab: React.ReactNode;
 }
 
-export default function NexusTabs({ ordersTab, productsTab, operativesTab, logsTab }: Props) {
-  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'operatives' | 'logs'>('orders');
+export default function NexusTabs({ ordersTab, productsTab, operativesTab, logsTab, intelligenceTab }: Props) {
+  const [activeTab, setActiveTab] = useState<'intelligence' | 'orders' | 'products' | 'operatives' | 'logs'>('intelligence');
 
   const tabs = [
+    { id: 'intelligence', label: 'INTELLIGENCE', icon: Activity },
     { id: 'orders', label: 'EXTRACTION_FEED', icon: Activity },
     { id: 'products', label: 'ARSENAL_MGMT', icon: Package },
     { id: 'operatives', label: 'OPERATIVE_FILES', icon: Users },
@@ -54,6 +56,7 @@ export default function NexusTabs({ ordersTab, productsTab, operativesTab, logsT
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:20px_20px]" />
           
           <div className="relative z-10">
+            {activeTab === 'intelligence' && intelligenceTab}
             {activeTab === 'orders' && ordersTab}
             {activeTab === 'products' && productsTab}
             {activeTab === 'operatives' && operativesTab}
