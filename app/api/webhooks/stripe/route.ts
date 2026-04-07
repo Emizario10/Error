@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { grantXP } from '@/lib/gamification';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20' as any,
@@ -42,32 +43,82 @@ export async function POST(req: Request) {
         expand: ['data.price.product'],
       });
 
+      // DYNAMIC ECONOMY LOGIC
+      const orderItemsData = [];
+      
+      for (const item of lineItems.data) {
+        const stripeProduct = item.price?.product as Stripe.Product;
+        const productId = stripeProduct?.metadata?.productId;
+
+        if (!productId) {
+          console.error("[ECONOMY_ERR] PRODUCT_ID_MISSING_IN_METADATA");
+          continue;
+        }
+
+        // 1. Fetch current status
+        const product = await prisma.product.findUnique({
+          where: { id: productId }
+        });
+
+        if (!product) {
+          console.error(`[ECONOMY_ERR] PRODUCT_NOT_FOUND: ${productId}`);
+          continue;
+        }
+
+        const quantity = item.quantity || 1;
+        
+        // 2. Increment sales
+        const newSalesCount = product.salesCount + quantity;
+        
+        // 3. Recalculate Heat Level
+        const newHeatLevel = Math.floor(newSalesCount / 5);
+        
+        // 4. Recalculate Current Price
+        // Formula: basePrice + (heatLevel * 8% * basePrice)
+        const newCurrentPrice = Math.round(product.basePrice + (newHeatLevel * 0.08 * product.basePrice));
+
+        // 5. Update Product in Vault
+        await prisma.product.update({
+          where: { id: productId },
+          data: {
+            salesCount: newSalesCount,
+            heatLevel: newHeatLevel,
+            currentPrice: newCurrentPrice
+          }
+        });
+
+        orderItemsData.push({
+          productId: productId,
+          quantity: quantity,
+          unitPrice: item.amount_total / 100 / quantity,
+          priceAtTime: newCurrentPrice // Tracking the economy shift
+        });
+      }
+
+      // Finalize Order Record
       const order = await prisma.order.create({
         data: {
           stripeSessionId: session.id,
           totalAmount: session.amount_total ? session.amount_total / 100 : 0,
           status: 'COMPLETED',
-          profileId: profileId || null, // LINK TO OPERATIVE
+          profileId: profileId || null,
           items: {
-            create: lineItems.data.map((item) => {
-              const stripeProduct = item.price?.product as Stripe.Product;
-              const productId = stripeProduct?.metadata?.productId || "UNKNOWN_HARDWARE";
-
-              return {
-                productId: productId,
-                quantity: item.quantity || 1,
-                unitPrice: item.amount_total / 100 / (item.quantity || 1),
-              };
-            }),
+            create: orderItemsData,
           },
         },
       });
 
       console.log(`--- [ EXTRACTION_LOCKED_TO_PROFILE: ${profileId || 'ANONYMOUS'} ] ---`);
       console.log(`VAULT_ID: ${order.id}`);
+      console.log(`ECONOMY_UPDATED: ${orderItemsData.length} ITEMS PROCESSED`);
+
+      // 6. GRANT_XP: Reward the operative for the extraction
+      if (profileId) {
+        const updatedProfile = await grantXP(profileId, 50, "PURCHASE");
+        console.log(`[IDENTITY_PROMOTED] XP_GRANTED: 50 | TOTAL_XP: ${updatedProfile.xp} | CLEARANCE: L${updatedProfile.clearanceLevel}`);
+      }
       
     } catch (dbErr: any) {
-      // REINFORCED ERROR LOGGING
       console.error("PRISMA ERROR:", dbErr);
       return NextResponse.json({ error: 'VAULT_SYNC_ERROR' }, { status: 500 });
     }

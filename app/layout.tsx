@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import CartSidebar from "@/components/CartSidebar";
 import ThemeProvider from "@/components/ThemeProvider";
+import EasterEggListener from "@/components/EasterEggListener";
+import SystemMessage from "@/components/SystemMessage";
 import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 
@@ -44,6 +46,8 @@ export default async function RootLayout({
           {/* Global Frame */}
           <Navbar />
           <CartSidebar />
+          <EasterEggListener />
+          <SystemMessage />
           
           {/* Main Content */}
           <main className="relative pt-16">

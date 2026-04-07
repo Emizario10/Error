@@ -8,6 +8,7 @@ import LogoutButton from '@/components/LogoutButton';
 import { Package, Clock } from 'lucide-react';
 import ThemeProvider from '@/components/ThemeProvider';
 import OpticsCalibration from './OpticsCalibration';
+import XPHud from './XPHud';
 
 /**
  * ACCOUNT_PAGE: Operator Dashboard (Hardened).
@@ -36,7 +37,13 @@ export default async function AccountPage() {
   // 2. PROFILE_EXTRACTION: Verify vault profile exists
   const profile = await prisma.profile.findUnique({
     where: { id: user.id },
-    include: {
+    select: {
+      id: true,
+      username: true,
+      xp: true,
+      clearanceLevel: true,
+      customColor: true,
+      createdAt: true,
       orders: {
         orderBy: { createdAt: 'desc' },
         include: { items: true }
@@ -73,8 +80,11 @@ export default async function AccountPage() {
           <LogoutButton />
         </div>
 
+        {/* IDENTITY & PROGRESSION */}
+        <XPHud xp={profile.xp} clearanceLevel={profile.clearanceLevel} />
+
         {/* CALIBRATION SECTION */}
-        <OpticsCalibration currentSelection={profile.customColor} />
+        <OpticsCalibration currentSelection={profile.customColor} clearanceLevel={profile.clearanceLevel} />
 
         {/* METRICS_GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

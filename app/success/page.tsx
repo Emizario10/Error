@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import GlitchButton from '@/components/GlitchButton';
 import Image from 'next/image';
 import { useCartStore } from '@/store/useCartStore';
+import { useSystemStore } from '@/store/useSystemStore';
 
 /**
  * SUCCESS_PAGE: Extraction Confirmation (Refined).
@@ -14,12 +15,16 @@ export default function SuccessPage() {
   const fullText = "DECRYPTING_TRANSACTION... SUCCESS.\nLOAD_BALANCING... STABLE.\nHARDWARE_EXTRACTION_INITIATED.\n[ AUTH_KEY_SENT_TO_COMM_LINK ]\n// TRANSACTION_VERIFIED //";
   const router = useRouter();
   const { clearCart } = useCartStore();
+  const { addMessage } = useSystemStore();
 
   useEffect(() => {
     // 1. CLEAR_TACTICAL_RIG
     clearCart();
 
-    // 2. TERMINAL_FEEDBACK_SEQUENCE
+    // 2. SYSTEM_CONSCIOUSNESS
+    addMessage("[!] EXTRACTION_CONFIRMED. Hardware is being routed through secondary nodes.", "INFO");
+
+    // 3. TERMINAL_FEEDBACK_SEQUENCE
     let i = 0;
     const interval = setInterval(() => {
       setText(fullText.slice(0, i));

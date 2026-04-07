@@ -64,7 +64,7 @@ export default function CheckoutPage() {
                 <h4 className="text-xs font-bold text-white uppercase tracking-widest">{item.name}</h4>
                 <p className="text-[10px] font-mono text-white/30 uppercase mt-1">[ Hardware_Locked ]</p>
               </div>
-              <span className="font-mono text-sm text-tactical">${item.price.toFixed(2)}</span>
+              <span className="font-mono text-sm text-tactical">${item.currentPrice.toFixed(2)}</span>
             </div>
           ))}
         </div>

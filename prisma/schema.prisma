@@ -4,53 +4,71 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  price       Float    
-  imageUrl    String?  @map("image_url")
-  category    String?
-  createdAt   DateTime @default(now()) @map("created_at")
+  id           String   @id @default(uuid())
+  name         String   @unique
+  description  String?
+  basePrice    Float    @map("base_price")
+  currentPrice Float    @map("current_price")
+  imageUrl     String?  @map("image_url")
+  category     String?
+  heatLevel    Int      @default(0) @map("heat_level")
+  salesCount   Int      @default(0) @map("sales_count")
+  createdAt    DateTime @default(now()) @map("created_at")
 
-  orderItems  OrderItem[]
+  orderItems OrderItem[]
 }
 
 model Profile {
-  id          String   @id // Matches Supabase Auth User ID
-  username    String   @unique
-  avatarUrl   String?  @map("avatar_url")
-  customColor String   @default("#CCFF00") @map("custom_color")
-  createdAt   DateTime @default(now()) @map("created_at")
+  id                 String   @id // Matches Supabase Auth User ID
+  username           String   @unique
+  avatarUrl          String?  @map("avatar_url")
+  customColor        String   @default("#CCFF00") @map("custom_color")
+  xp                 Int      @default(0)
+  clearanceLevel     Int      @default(1) @map("clearance_level")
+  kromEasterEggFound Boolean  @default(false) @map("krom_easter_egg_found")
+  createdAt          DateTime @default(now()) @map("created_at")
 
-  orders      Order[]
-  posts       Post[]
+  orders Order[]
+  posts  Post[]
+  xpLogs XPLog[]
+}
+
+model XPLog {
+  id        String   @id @default(cuid())
+  profileId String   @map("profile_id")
+  type      String // e.g., "PURCHASE", "POST", "EASTER_EGG_KROM"
+  amount    Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  profile Profile @relation(fields: [profileId], references: [id])
 }
 
 model Order {
-  id               String      @id @default(uuid())
-  stripeSessionId  String      @unique @map("stripe_session_id")
-  totalAmount      Float       @map("total_amount")
-  status           String      @default("pending") // pending, completed, failed
-  createdAt        DateTime    @default(now()) @map("created_at")
-  
-  profile          Profile?    @relation(fields: [profileId], references: [id])
-  profileId        String?     @map("profile_id")
+  id              String   @id @default(uuid())
+  stripeSessionId String   @unique @map("stripe_session_id")
+  totalAmount     Float    @map("total_amount")
+  status          String   @default("pending") // pending, completed, failed
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  items            OrderItem[]
+  profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?  @map("profile_id")
+
+  items OrderItem[]
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String   @map("order_id")
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String   @map("product_id")
-  quantity  Int
-  unitPrice Float    @map("unit_price")
+  id          String  @id @default(uuid())
+  order       Order   @relation(fields: [orderId], references: [id])
+  orderId     String  @map("order_id")
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String  @map("product_id")
+  quantity    Int
+  unitPrice   Float   @map("unit_price")
+  priceAtTime Float   @map("price_at_time")
 }
 
 model Post {
@@ -60,7 +78,7 @@ model Post {
   image     String?
   category  String   @default("UNCLASSIFIED")
   createdAt DateTime @default(now()) @map("created_at")
-  
-  author    Profile  @relation(fields: [authorId], references: [id])
-  authorId  String   @map("author_id")
+
+  author   Profile @relation(fields: [authorId], references: [id])
+  authorId String  @map("author_id")
 }

@@ -4,9 +4,13 @@ import { prisma } from '@/lib/prisma';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, description, price, imageUrl, category } = body;
+    // Support both 'price' (legacy) and the new 'basePrice'/'currentPrice'
+    const { name, description, currentPrice, price, imageUrl, category, basePrice } = body;
 
-    if (!name || typeof price !== 'number') {
+    const finalPrice = currentPrice || price;
+    const finalBasePrice = basePrice || finalPrice;
+
+    if (!name || typeof finalPrice !== 'number') {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
 
@@ -14,7 +18,8 @@ export async function POST(req: Request) {
       data: {
         name,
         description: description ?? null,
-        price,
+        basePrice: finalBasePrice,
+        currentPrice: finalPrice,
         imageUrl: imageUrl ?? null,
         category: category ?? null,
       },

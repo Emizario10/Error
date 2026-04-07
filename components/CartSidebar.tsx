@@ -94,7 +94,7 @@ export default function CartSidebar() {
                     <div className="flex-grow flex flex-col justify-center">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-xs font-bold text-white uppercase tracking-wider">{item.name}</h4>
-                        <span className="text-xs font-mono text-tactical">${item.price.toFixed(2)}</span>
+                        <span className="text-xs font-mono text-tactical">${item.currentPrice.toFixed(2)}</span>
                       </div>
                       <button 
                         onClick={() => removeItem(item.id)}

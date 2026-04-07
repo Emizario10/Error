@@ -36,7 +36,7 @@ export async function POST(req: Request) {
           images: item.imageUrl ? [item.imageUrl] : [],
           metadata: { productId: item.id },
         },
-        unit_amount: Math.round(item.price * 100),
+        unit_amount: Math.round(item.currentPrice * 100),
       },
       quantity: 1,
     }));
