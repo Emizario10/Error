@@ -134,7 +134,7 @@ export default async function AccountPage() {
                     </td>
                   </tr>
                 ) : (
-                  profile.orders.map((order) => (
+                  profile.orders.map((order: any) => (
                     <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
                       <td className="px-8 py-6 text-white/60 group-hover:text-tactical transition-colors">
                         {order.id.split('-')[0]}...{order.id.split('-').pop()}
