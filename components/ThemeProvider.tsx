@@ -1,20 +1,28 @@
 "use client";
 
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useThemeStore } from '@/store/useThemeStore';
 
+interface ThemeProviderProps {
+  children: React.ReactNode;
+  initialColor: string;
+}
+
 /**
- * THEME_PROVIDER: Client-side system initializer.
- * Syncs the saved vault color with the global CSS state.
+ * THEME_PROVIDER: The Injector
+ * Synchronizes the server-side profile color with the client-side Zustand store.
+ * Optimized to prevent infinite update loops.
  */
-export default function ThemeProvider({ initialColor }: { initialColor: string }) {
-  const setColor = useThemeStore((state) => state.setColor);
+export default function ThemeProvider({ children, initialColor }: ThemeProviderProps) {
+  const { setColor } = useThemeStore();
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (initialColor) {
+    if (!initialized.current && initialColor) {
       setColor(initialColor);
+      initialized.current = true;
     }
   }, [initialColor, setColor]);
 
-  return null; // Side-effect component
+  return <>{children}</>;
 }

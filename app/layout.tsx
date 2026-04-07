@@ -4,6 +4,9 @@ import './globals.css'
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import CartSidebar from "@/components/CartSidebar";
+import ThemeProvider from "@/components/ThemeProvider";
+import { createClient } from "@/utils/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 const oswald = Oswald({ subsets: ['latin'], variable: '--font-oswald' })
@@ -14,22 +17,39 @@ export const metadata: Metadata = {
   description: 'Cyberpunk & Industrial Streetwear Culture',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  let fetchedColor = '#CCFF00'; // Default Acid Green
+
+  if (user) {
+    const profile = await prisma.profile.findUnique({
+      where: { id: user.id },
+      select: { customColor: true }
+    });
+    if (profile?.customColor) {
+      fetchedColor = profile.customColor;
+    }
+  }
+
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${oswald.variable} ${spaceMono.variable} bg-black text-[#F3F4F6] font-sans antialiased`}>
-        {/* Global Frame */}
-        <Navbar />
-        <CartSidebar />
-        
-        {/* Main Content */}
-        <main className="relative pt-16">
-          {children}
-        </main>
+        <ThemeProvider initialColor={fetchedColor}>
+          {/* Global Frame */}
+          <Navbar />
+          <CartSidebar />
+          
+          {/* Main Content */}
+          <main className="relative pt-16">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   )
