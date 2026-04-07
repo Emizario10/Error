@@ -4,16 +4,22 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import GlitchButton from '@/components/GlitchButton';
 import Image from 'next/image';
+import { useCartStore } from '@/store/useCartStore';
 
 /**
  * SUCCESS_PAGE: Extraction Confirmation (Refined).
  */
 export default function SuccessPage() {
   const [text, setText] = useState("");
-  const fullText = "DECRYPTING_TRANSACTION... SUCCESS.\nLOAD_BALANCING... STABLE.\nHARDWARE_EXTRACTION_INITIATED.\n[ AUTH_KEY_SENT_TO_COMM_LINK ]";
+  const fullText = "DECRYPTING_TRANSACTION... SUCCESS.\nLOAD_BALANCING... STABLE.\nHARDWARE_EXTRACTION_INITIATED.\n[ AUTH_KEY_SENT_TO_COMM_LINK ]\n// TRANSACTION_VERIFIED //";
   const router = useRouter();
+  const { clearCart } = useCartStore();
 
   useEffect(() => {
+    // 1. CLEAR_TACTICAL_RIG
+    clearCart();
+
+    // 2. TERMINAL_FEEDBACK_SEQUENCE
     let i = 0;
     const interval = setInterval(() => {
       setText(fullText.slice(0, i));
@@ -32,7 +38,7 @@ export default function SuccessPage() {
           src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop" 
           alt="Extraction Success"
           fill
-          className="object-cover opacity-20 grayscale"
+          className="object-cover opacity-10 grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
@@ -44,20 +50,27 @@ export default function SuccessPage() {
         </div>
 
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8">
-          EXTRACTION_COMPLETE
+          TRANSACTION_VERIFIED
         </h1>
 
         {/* Terminal Feedback */}
-        <pre className="font-mono text-[10px] md:text-xs text-tactical bg-black/80 backdrop-blur-md p-8 border border-white/10 text-left mb-12 h-32 overflow-hidden leading-relaxed uppercase tracking-widest whitespace-pre-wrap">
+        <pre className="font-mono text-[10px] md:text-xs text-tactical bg-black/80 backdrop-blur-md p-8 border border-white/10 text-left mb-12 h-40 overflow-hidden leading-relaxed uppercase tracking-widest whitespace-pre-wrap">
           {text}
           <span className="animate-pulse">_</span>
         </pre>
 
-        <GlitchButton 
-          text="RETURN_TO_ARSENAL" 
-          onClick={() => router.push('/catalog')} 
-          className="px-12 py-4"
-        />
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <GlitchButton 
+            text="VIEW_ACCOUNT" 
+            onClick={() => router.push('/account')} 
+            className="px-8 py-4"
+          />
+          <GlitchButton 
+            text="RETURN_TO_ARSENAL" 
+            onClick={() => router.push('/catalog')} 
+            className="px-8 py-4"
+          />
+        </div>
       </div>
 
       {/* Aesthetic Overlays */}

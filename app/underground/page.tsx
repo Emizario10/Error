@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
+import Link from 'next/link';
 import GlitchButton from '@/components/GlitchButton';
 import UndergroundClient from './UndergroundClient';
 
@@ -51,51 +52,94 @@ export default async function UndergroundPage() {
             </span>
           </div>
         ) : (
-          posts.map((post) => (
-            <article key={post.id} className="group flex flex-col bg-black border border-white/5 hover:border-tactical/30 transition-all duration-700">
-              {/* Report Header */}
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#050505]">
-                <div className="flex flex-col">
-                  <span className="text-[8px] font-mono text-[#FF3131] uppercase tracking-[0.4em] mb-1">
-                    [{post.category}]
-                  </span>
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
-                    {new Date(post.createdAt).toLocaleTimeString()} // {new Date(post.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest">
-                  OP_{post.author.username}
-                </span>
-              </div>
+          posts.map((post) => {
+            const isSystemDirective = post.author.id === user?.id && isAdmin;
 
-              {/* Report Image */}
-              <div className="relative aspect-video w-full overflow-hidden bg-[#0a0a0a]">
-                {post.image ? (
-                  <Image src={post.image} alt={post.title} fill className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 grayscale group-hover:grayscale-0" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-[10px] text-white/5 uppercase tracking-[1em] font-mono">
-                    NO_VISUAL_DATA
+            return (
+              <article 
+                key={post.id} 
+                className={`group flex flex-col bg-black border transition-all duration-700 ${
+                  isSystemDirective 
+                    ? 'border-tactical bg-tactical/[0.02] shadow-[0_0_20px_rgba(204,255,0,0.05)]' 
+                    : 'border-white/5 hover:border-tactical/30'
+                }`}
+              >
+                {/* Report Header */}
+                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#050505]">
+                  <div className="flex flex-col">
+                    <span className={`text-[8px] font-mono uppercase tracking-[0.4em] mb-1 ${
+                      isSystemDirective ? 'text-tactical' : 'text-[#FF3131]'
+                    }`}>
+                      {isSystemDirective ? '[ SYSTEM_DIRECTIVE ]' : `[${post.category}]`}
+                    </span>
+                    <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
+                      {new Date(post.createdAt).toLocaleTimeString()} // {new Date(post.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
-                )}
-                {/* CRT Effect Overlay */}
-                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(204,255,0,0.02)_1px,transparent_1px)] bg-[length:100%_4px] opacity-40" />
-              </div>
+                  <div className="flex flex-col items-end">
+                    <span className={`text-[8px] font-mono uppercase tracking-widest ${
+                      isSystemDirective ? 'text-tactical' : 'text-white/20'
+                    }`}>
+                      OP_{post.author.username}
+                    </span>
+                    {isSystemDirective && (
+                      <span className="text-[7px] font-mono text-tactical/50 uppercase tracking-tighter">CLEARANCE_L9</span>
+                    )}
+                  </div>
+                </div>
 
-              {/* Report Content */}
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-6 group-hover:text-tactical transition-colors leading-tight">
-                  {post.title}
-                </h3>
-                <p className="text-[11px] font-mono text-white/40 uppercase tracking-wider leading-relaxed line-clamp-4 mb-8">
-                  {post.content}
-                </p>
-                <button className="mt-auto text-[10px] font-mono text-tactical uppercase tracking-[0.5em] text-left hover:brightness-125 transition-all flex items-center gap-2">
-                  <span>{">"} READ_FULL_REPORT</span>
-                  <div className="w-8 h-[1px] bg-tactical/30 group-hover:w-16 transition-all" />
-                </button>
-              </div>
-            </article>
-          ))
+                {/* Report Image */}
+                <Link href={`/underground/${post.id}`} className="relative aspect-video w-full overflow-hidden bg-[#0a0a0a]">
+                  {post.image ? (
+                    <Image 
+                      src={post.image} 
+                      alt={post.title} 
+                      fill 
+                      className={`object-cover transition-all duration-1000 grayscale group-hover:grayscale-0 group-hover:scale-105 ${
+                        isSystemDirective ? 'opacity-80 group-hover:opacity-100' : 'opacity-60 group-hover:opacity-100'
+                      }`} 
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] text-white/5 uppercase tracking-[1em] font-mono">
+                      NO_VISUAL_DATA
+                    </div>
+                  )}
+                  {/* CRT Effect Overlay */}
+                  <div className={`absolute inset-0 pointer-events-none bg-[linear-gradient(var(--tactical-color)_1px,transparent_1px)] bg-[length:100%_4px] ${
+                    isSystemDirective ? 'opacity-20' : 'opacity-40'
+                  }`} />
+                </Link>
+
+                {/* Report Content */}
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="mb-6">
+                    <h3 className={`text-2xl font-bold uppercase tracking-tight transition-colors leading-tight ${
+                      isSystemDirective ? 'text-white group-hover:text-tactical' : 'text-white group-hover:text-tactical'
+                    }`}>
+                      {post.title}
+                    </h3>
+                    {isSystemDirective && (
+                      <div className="mt-2 text-[9px] font-mono text-tactical uppercase tracking-[0.3em] font-bold">
+                        [ MANDATORY_READING ]
+                      </div>
+                    )}
+                  </div>
+                  
+                  <p className="text-[11px] font-mono text-white/40 uppercase tracking-wider leading-relaxed line-clamp-4 mb-8">
+                    {post.content}
+                  </p>
+                  
+                  <Link 
+                    href={`/underground/${post.id}`} 
+                    className="mt-auto text-[10px] font-mono text-tactical uppercase tracking-[0.5em] text-left hover:brightness-125 transition-all flex items-center gap-2 group/btn"
+                  >
+                    <span>{">"} READ_FULL_REPORT</span>
+                    <div className="w-8 h-[1px] bg-tactical/30 group-hover:w-16 transition-all" />
+                  </Link>
+                </div>
+              </article>
+            );
+          })
         )}
       </div>
 

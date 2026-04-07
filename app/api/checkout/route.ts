@@ -5,7 +5,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia' as any,
+  apiVersion: '2024-06-20' as any,
 });
 
 export async function POST(req: Request) {
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       mode: 'payment',
       client_reference_id: user?.id || undefined, // OFFICIAL LINK TO OPERATIVE
       success_url: `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/catalog`,
+      cancel_url: `${req.headers.get('origin')}/cancel`,
       metadata: {
         userId: user?.id || null, // Redundant but safe for metadata filtering
       },

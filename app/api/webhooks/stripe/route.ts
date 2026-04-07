@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24-preview' as any,
+  apiVersion: '2024-06-20' as any,
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -22,10 +22,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
+  // 1. SPECIFICALLY LISTEN FOR SESSION COMPLETION
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
+    
+    // CLEAR LOGGING FOR DIAGNOSTICS
+    console.log("SESSION COMPLETED:", session.id);
+    console.log("CLIENT REF ID (UserId):", session.client_reference_id);
+
     // USE CLIENT_REFERENCE_ID AS PRIMARY LINK TO OPERATIVE
-    const profileId = session.client_reference_id || session.metadata?.userId;
+    const profileId = session.client_reference_id;
+
+    if (!profileId) {
+      console.warn("[VAULT_WARN] NO_PROFILE_ID_FOUND_IN_SESSION. ANONYMOUS_ORDER_CREATED.");
+    }
 
     try {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
@@ -57,7 +67,8 @@ export async function POST(req: Request) {
       console.log(`VAULT_ID: ${order.id}`);
       
     } catch (dbErr: any) {
-      console.error(`[VAULT_ERR] DATABASE_SYNC_FAILED: ${dbErr.message}`);
+      // REINFORCED ERROR LOGGING
+      console.error("PRISMA ERROR:", dbErr);
       return NextResponse.json({ error: 'VAULT_SYNC_ERROR' }, { status: 500 });
     }
   }

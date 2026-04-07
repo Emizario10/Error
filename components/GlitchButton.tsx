@@ -8,13 +8,14 @@ interface GlitchButtonProps {
   text: string;
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 /**
  * GLITCH_BUTTON: Refactored for Dynamic Tactical Theme.
  * High-end button that responds to global accent color changes.
  */
-export default function GlitchButton({ text, onClick, className = "" }: GlitchButtonProps) {
+export default function GlitchButton({ text, onClick, className = "", disabled = false }: GlitchButtonProps) {
   const container = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const glitchRef = useRef<HTMLSpanElement>(null);
@@ -22,6 +23,7 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
   const { contextSafe } = useGSAP({ scope: container });
 
   const handleMouseEnter = contextSafe(() => {
+    if (disabled) return;
     const tacticalColor = getComputedStyle(document.documentElement).getPropertyValue('--tactical-color').trim();
     const tl = gsap.timeline({ repeat: -1 });
     
@@ -50,6 +52,7 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
   });
 
   const handleMouseLeave = contextSafe(() => {
+    if (disabled) return;
     const tacticalColor = getComputedStyle(document.documentElement).getPropertyValue('--tactical-color').trim();
     gsap.killTweensOf([container.current, textRef.current, glitchRef.current]);
     
@@ -66,11 +69,12 @@ export default function GlitchButton({ text, onClick, className = "" }: GlitchBu
     <button
       ref={container}
       onClick={onClick}
+      disabled={disabled}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative px-10 py-4 border border-tactical bg-transparent transition-all group overflow-hidden ${className}`}
+      className={`relative px-10 py-4 border border-tactical bg-transparent transition-all group overflow-hidden ${disabled ? "opacity-50 cursor-not-allowed grayscale" : ""} ${className}`}
       style={{
-        boxShadow: '0 0 15px var(--tactical-color)',
+        boxShadow: disabled ? 'none' : '0 0 15px var(--tactical-color)',
       }}
     >
       {/* Main Text */}

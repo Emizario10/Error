@@ -14,10 +14,31 @@ import { useRouter } from 'next/navigation';
 export default function CartSidebar() {
   const { items, isOpen, toggleCart, removeItem, totalPrice } = useCartStore();
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = React.useState(false);
 
-  const handleInitiateCheckout = () => {
-    toggleCart();
-    router.push('/checkout');
+  const handleInitiateCheckout = async () => {
+    if (isRedirecting) return;
+    setIsRedirecting(true);
+    
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error('EXTRACTION_ERR:', data.error);
+        setIsRedirecting(false);
+      }
+    } catch (err) {
+      console.error('CHECKOUT_CRITICAL_FAIL:', err);
+      setIsRedirecting(false);
+    }
   };
 
   return (
@@ -97,9 +118,10 @@ export default function CartSidebar() {
               </div>
               
               <GlitchButton 
-                text="INITIATE_CHECKOUT" 
+                text={isRedirecting ? "ENCRYPTING_PAYMENT..." : "INITIATE_CHECKOUT"} 
                 className="w-full"
                 onClick={handleInitiateCheckout}
+                disabled={isRedirecting || items.length === 0}
               />
               
               <p className="mt-6 text-[8px] text-white/10 font-mono text-center uppercase tracking-[0.5em]">
