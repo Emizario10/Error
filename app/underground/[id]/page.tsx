@@ -10,8 +10,8 @@ import GlitchButton from '@/components/GlitchButton';
  * POST_DETAIL_PAGE: Classified Decrypted Document.
  * High-clearance interface for viewing individual intelligence reports.
  */
-export default async function PostDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   // 1. DATA_FETCHING: Extract encrypted intelligence report
   const post = await prisma.post.findUnique({
