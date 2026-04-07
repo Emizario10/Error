@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { grantXP } from '@/lib/gamification';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/logger';
 
 export async function POST() {
   try {
@@ -50,7 +51,7 @@ export async function POST() {
     });
 
   } catch (err: any) {
-    console.error('EASTER_EGG_ERR:', err);
+    logger.error('EASTER_EGG_ERR:', err);
     return NextResponse.json({ error: 'INTERNAL_SERVER_ERROR' }, { status: 500 });
   }
 }

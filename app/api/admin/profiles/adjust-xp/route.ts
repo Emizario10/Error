@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { grantXP } from '@/lib/gamification';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(updatedProfile);
   } catch (err: any) {
-    console.error('XP adjustment error', err);
+    logger.error('XP adjustment error', err);
     return NextResponse.json({ error: 'XP_ADJUSTMENT_FAIL' }, { status: 500 });
   }
 }

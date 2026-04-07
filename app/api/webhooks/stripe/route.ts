@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err: any) {
-    console.error(`[SEC_BREACH] WEBHOOK_VERIFICATION_FAILED: ${err.message}`);
+    logger.error(`[SEC_BREACH] WEBHOOK_VERIFICATION_FAILED: ${err.message}`);
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         const productId = stripeProduct?.metadata?.productId;
 
         if (!productId) {
-          console.error("[ECONOMY_ERR] PRODUCT_ID_MISSING_IN_METADATA");
+          logger.error("[ECONOMY_ERR] PRODUCT_ID_MISSING_IN_METADATA");
           continue;
         }
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         });
 
         if (!product) {
-          console.error(`[ECONOMY_ERR] PRODUCT_NOT_FOUND: ${productId}`);
+          logger.error(`[ECONOMY_ERR] PRODUCT_NOT_FOUND: ${productId}`);
           continue;
         }
 
@@ -125,11 +125,10 @@ export async function POST(req: Request) {
       }
       
     } catch (dbErr: any) {
-      console.error("PRISMA ERROR:", dbErr);
+      logger.error("PRISMA ERROR:", dbErr);
       return NextResponse.json({ error: 'VAULT_SYNC_ERROR' }, { status: 500 });
     }
   }
 
   return NextResponse.json({ received: true });
 }
-

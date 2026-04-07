@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 export async function POST() {
   try {
@@ -20,7 +21,7 @@ export async function POST() {
 
     return NextResponse.json({ success: true, message: 'MARKET_RESET_COMPLETE' });
   } catch (err: any) {
-    console.error('Market reset error', err);
+    logger.error('Market reset error', err);
     return NextResponse.json({ error: 'MARKET_RESET_FAIL' }, { status: 500 });
   }
 }

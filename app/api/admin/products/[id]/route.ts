@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 export async function PATCH(
   req: Request,
@@ -25,7 +26,7 @@ export async function PATCH(
 
     return NextResponse.json(updated);
   } catch (err: any) {
-    console.error('Update product error', err);
+    logger.error('Update product error', err);
     return NextResponse.json({ error: 'VAULT_UPDATE_FAIL' }, { status: 500 });
   }
 }
@@ -39,7 +40,7 @@ export async function DELETE(
     await prisma.product.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error('Delete product error', err);
+    logger.error('Delete product error', err);
     return NextResponse.json({ error: 'VAULT_DELETE_FAIL' }, { status: 500 });
   }
 }

@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       throw dbErr;
     }
   } catch (err: any) {
-    console.error('[VAULT_SYNC_ERR]:', err);
+    logger.error('[VAULT_SYNC_ERR]:', err);
     return NextResponse.json({ error: 'VAULT_SYNC_ERROR', details: err.message }, { status: 500 });
   }
 }

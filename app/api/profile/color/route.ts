@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/logger';
 
 const TACTICAL_UNLOCKS: Record<string, number> = {
   '#CCFF00': 1, // ACID_GREEN
@@ -40,7 +41,7 @@ export async function PATCH(req: Request) {
     const requiredLevel = TACTICAL_UNLOCKS[color.toUpperCase()] || 99;
 
     if (profile.clearanceLevel < requiredLevel) {
-      console.error(`[SEC_VIOLATION] ILLEGAL_COLOR_REQUEST: ${color} | USER_L${profile.clearanceLevel} | REQ_L${requiredLevel}`);
+      logger.error(`[SEC_VIOLATION] ILLEGAL_COLOR_REQUEST: ${color} | USER_L${profile.clearanceLevel} | REQ_L${requiredLevel}`);
       return NextResponse.json({ error: '[ SYS_ERROR: INSUFFICIENT_CLEARANCE ]' }, { status: 403 });
     }
 
@@ -52,7 +53,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(updatedProfile);
   } catch (err: any) {
-    console.error('THEME_UPDATE_ERR:', err);
+    logger.error('THEME_UPDATE_ERR:', err);
     return NextResponse.json({ error: 'VAULT_UPDATE_FAIL' }, { status: 500 });
   }
 }

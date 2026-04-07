@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(product);
   } catch (err: any) {
-    console.error('Create product error', err);
+    logger.error('Create product error', err);
     return NextResponse.json({ error: err.message ?? 'Internal' }, { status: 500 });
   }
 }
@@ -37,7 +38,7 @@ export async function GET() {
     const products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json(products);
   } catch (err: any) {
-    console.error('Fetch products error', err);
+    logger.error('Fetch products error', err);
     return NextResponse.json({ error: err.message ?? 'Internal' }, { status: 500 });
   }
 }
