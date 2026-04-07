@@ -17,24 +17,24 @@ import CyberSkeleton from '@/components/ui/CyberSkeleton';
 
 /**
  * NEXUS_COMMAND_CLIENT: Core dashboard engine powered by React Query.
- * Features real-time telemetry, delta analytics, and intelligent alerting.
+ * Upgraded to Military Grade with tactical Deltas and Intelligence.
  */
 export default function NexusCommandClient() {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['nexus-data'],
+    queryKey: ['nexus-global-data'],
     queryFn: async () => {
       const res = await fetch('/api/admin/nexus-data');
-      if (!res.ok) throw new Error('VAULT_SYNC_FAILURE');
+      if (!res.ok) throw new Error('VAULT_HANDSHAKE_FAILURE');
       return res.json();
     },
-    refetchInterval: 30000, // Sync every 30s
+    refetchInterval: 30000, // Background sync every 30s
   });
 
   if (isError) {
     return (
       <div className="py-40 flex flex-col items-center justify-center gap-6">
         <div className="text-red-500 font-mono text-xs uppercase tracking-[0.5em] animate-pulse">
-          [!] CRITICAL_VAULT_HANDSHAKE_ERROR
+          [!] CRITICAL_DATA_LINK_FAILURE
         </div>
         <button 
           onClick={() => refetch()}
@@ -95,7 +95,7 @@ export default function NexusCommandClient() {
         <div className="flex items-center gap-6 font-mono text-[9px] text-white/20 uppercase tracking-widest">
           <div className="flex items-center gap-2">
             <RefreshCw size={10} className={isLoading ? 'animate-spin text-tactical' : ''} />
-            <span>Last Sync: {new Date().toLocaleTimeString()}</span>
+            <span>Sync: {new Date().toLocaleTimeString()}</span>
           </div>
           <span className="text-tactical animate-pulse">● System_Live</span>
         </div>
@@ -103,7 +103,7 @@ export default function NexusCommandClient() {
 
       {/* GLOBAL_METRICS_GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {isLoading ? (
+        {isLoading && !data ? (
           [...Array(4)].map((_, i) => <CyberSkeleton key={i} height={160} />)
         ) : (
           metrics.map((m, i) => (
@@ -131,11 +131,10 @@ export default function NexusCommandClient() {
               </div>
               
               {/* Dynamic Glow for Delta */}
-              {m.delta !== null && m.delta >= 0 && (
-                <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-tactical/20 blur-sm" />
-              )}
-              {m.delta !== null && m.delta < 0 && (
-                <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-red-500/20 blur-sm animate-pulse" />
+              {m.delta !== null && (
+                <div className={`absolute -bottom-1 left-0 right-0 h-[2px] blur-sm transition-all duration-1000 ${
+                  m.delta >= 0 ? 'bg-tactical/20' : 'bg-red-500/40 animate-pulse'
+                }`} />
               )}
             </div>
           ))
@@ -143,9 +142,9 @@ export default function NexusCommandClient() {
       </div>
 
       {/* TABS_SYSTEM */}
-      {isLoading ? (
+      {isLoading && !data ? (
         <CyberSkeleton height={600} />
-      ) : (
+      ) : data && (
         <NexusTabs 
           intelligenceTab={<IntelligenceDashboard />}
           ordersTab={<OrderFeedClient orders={data.orders} />}
