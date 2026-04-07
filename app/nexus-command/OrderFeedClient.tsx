@@ -51,7 +51,7 @@ export default function OrderFeedClient({ orders }: OrderFeedClientProps) {
             </span>
           </div>
         ) : (
-          orders.map((order) => (
+          orders.map((order: any) => (
             <div 
               key={order.id}
               className={`bg-black border transition-all duration-500 ${

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     if (!items?.length) return NextResponse.json({ error: 'RIG_EMPTY' }, { status: 400 });
 
     // 2. CONSTRUCT LINE ITEMS
-    const lineItems = items.map((item) => ({
+    const lineItems = items.map((item: CartItem) => ({
       price_data: {
         currency: 'usd',
         product_data: {

@@ -75,7 +75,7 @@ export default function OperativeTable({ profiles: initial }: Props) {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {profiles.map((p) => (
+            {profiles.map((p: any) => (
               <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
                 <td className="p-4 text-white/20 text-[8px]">{p.id}</td>
                 <td className="p-4 font-bold text-white group-hover:text-tactical transition-colors flex items-center gap-3">

@@ -104,7 +104,12 @@ export async function POST(req: Request) {
           status: 'COMPLETED',
           profileId: profileId || null,
           items: {
-            create: orderItemsData,
+            create: orderItemsData.map((item: any) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              priceAtTime: item.priceAtTime
+            })),
           },
         },
       });

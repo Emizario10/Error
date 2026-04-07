@@ -88,7 +88,7 @@ export default function HomePage() {
           </div>
 
           <div className="specs-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 border border-white/5">
-            {techSpecs.map((spec, i) => (
+            {techSpecs.map((spec: any, i: number) => (
               <div key={i} className="spec-card group relative bg-black p-12 overflow-hidden hover:bg-[#050505] transition-colors duration-500">
                 {/* Visual Data Decorations using tactical color */}
                 <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-tactical transition-colors" />

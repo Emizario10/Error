@@ -24,7 +24,7 @@ export default function NexusTabs({ ordersTab, productsTab, operativesTab, logsT
     <div className="space-y-8">
       {/* Tab Navigation */}
       <div className="flex flex-wrap gap-2 border-b border-white/5 pb-px">
-        {tabs.map((tab) => {
+        {tabs.map((tab: any) => {
           const isActive = activeTab === tab.id;
           return (
             <button

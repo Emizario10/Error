@@ -6,7 +6,7 @@ export async function POST() {
     const products = await prisma.product.findMany();
 
     await prisma.$transaction(
-      products.map((p) =>
+      products.map((p: any) =>
         prisma.product.update({
           where: { id: p.id },
           data: {

@@ -71,7 +71,7 @@ export default function XPHud({ xp, clearanceLevel }: XPHudProps) {
           <div className="h-2 w-full bg-white/5 border border-white/5 relative overflow-hidden">
             {/* Background segments */}
             <div className="absolute inset-0 flex">
-              {[...Array(10)].map((_, i) => (
+              {[...Array(10)].map((_: any, i: number) => (
                 <div key={i} className="flex-grow border-r border-white/5 last:border-0" />
               ))}
             </div>

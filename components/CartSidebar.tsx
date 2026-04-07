@@ -84,7 +84,7 @@ export default function CartSidebar() {
                   </span>
                 </div>
               ) : (
-                items.map((item, idx) => (
+                items.map((item: any, idx: number) => (
                   <div key={`${item.id}-${idx}`} className="flex gap-6 group">
                     <div className="relative w-24 h-24 bg-[#0a0a0a] border border-[#222] flex-shrink-0">
                       {item.imageUrl && (

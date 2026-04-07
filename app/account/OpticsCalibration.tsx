@@ -58,7 +58,7 @@ export default function OpticsCalibration({ currentSelection, clearanceLevel }: 
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-        {TACTICAL_COLORS.map((c) => {
+        {TACTICAL_COLORS.map((c: any) => {
           const isLocked = clearanceLevel < c.level;
           const isActive = color === c.hex;
 

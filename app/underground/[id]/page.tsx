@@ -121,7 +121,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             </div>
             
             <div className="space-y-6 text-white/70 leading-relaxed text-sm md:text-base">
-              {post.content.split('\n').map((paragraph, idx) => (
+              {post.content.split('\n').map((paragraph: string, idx: number) => (
                 <p key={idx} className="relative pl-6 border-l border-white/5">
                   <span className="absolute left-0 text-[10px] text-white/10">{idx + 1}</span>
                   {paragraph}

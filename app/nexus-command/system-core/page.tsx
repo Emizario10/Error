@@ -71,7 +71,7 @@ export default function SystemCorePage() {
           </div>
           
           <div className="grid grid-cols-8 gap-2 opacity-20">
-            {[...Array(64)].map((_, i) => (
+            {[...Array(64)].map((_: any, i: number) => (
               <div key={i} className="h-1 bg-tactical animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
             ))}
           </div>

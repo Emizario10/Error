@@ -58,7 +58,7 @@ export default function CheckoutPage() {
 
         {/* List */}
         <div className="space-y-6 mb-16">
-          {items.map((item, idx) => (
+          {items.map((item: any, idx: number) => (
             <div key={`${item.id}-${idx}`} className="flex justify-between items-center py-4 border-b border-white/5">
               <div>
                 <h4 className="text-xs font-bold text-white uppercase tracking-widest">{item.name}</h4>

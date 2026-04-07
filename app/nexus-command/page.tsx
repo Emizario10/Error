@@ -35,7 +35,7 @@ export default async function NexusCommandPage() {
   ]);
 
   // 2. METRIC_CALCULATION
-  const totalRevenue = allOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+  const totalRevenue = allOrders.reduce((sum: number, o) => sum + o.totalAmount, 0);
   const successRate = allOrders.length > 0 
     ? (allOrders.filter(o => o.status === 'COMPLETED').length / allOrders.length) * 100 
     : 100;
@@ -72,7 +72,7 @@ export default async function NexusCommandPage() {
 
         {/* GLOBAL_METRICS_GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {metrics.map((m, i) => (
+          {metrics.map((m: any, i: number) => (
             <div key={i} className="bg-[#050505] border border-white/5 p-8 flex flex-col gap-4 group hover:border-tactical/20 transition-all duration-500">
               <div className="flex justify-between items-start text-white/20 group-hover:text-tactical/40 transition-colors">
                 <m.icon size={20} strokeWidth={1.5} />

@@ -37,7 +37,7 @@ export default function LogFeed({ logs }: Props) {
               [ NO_SYSTEM_EVENTS_RECORDED ]
             </div>
           ) : (
-            logs.map((log) => (
+            logs.map((log: any) => (
               <div key={log.id} className="flex gap-4 group">
                 <span className="text-white/20 whitespace-nowrap">
                   [{new Date(log.createdAt).toISOString().replace('T', ' ').split('.')[0]}]

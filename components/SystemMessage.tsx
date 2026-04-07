@@ -53,7 +53,7 @@ export default function SystemMessage() {
   return (
     <div className="fixed top-24 right-8 z-[9999] flex flex-col gap-4 pointer-events-none w-full max-w-[320px]">
       <AnimatePresence>
-        {messages.map((m) => (
+        {messages.map((m: any) => (
           <motion.div
             key={m.id}
             initial={{ x: 50, opacity: 0 }}

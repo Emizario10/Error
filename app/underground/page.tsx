@@ -52,7 +52,7 @@ export default async function UndergroundPage() {
             </span>
           </div>
         ) : (
-          posts.map((post) => {
+          posts.map((post: any) => {
             const isSystemDirective = post.author.id === user?.id && isAdmin;
 
             return (

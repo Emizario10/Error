@@ -146,7 +146,7 @@ export default function ProductTableClient({ products: initial }: Props) {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {products.map((p) => (
+            {products.map((p: any) => (
               <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
                 <td className="p-4 font-bold text-white group-hover:text-tactical transition-colors">{p.name}</td>
                 <td className="p-4 text-white/40">{p.category || 'N/A'}</td>
