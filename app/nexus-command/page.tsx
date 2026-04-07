@@ -35,9 +35,9 @@ export default async function NexusCommandPage() {
   ]);
 
   // 2. METRIC_CALCULATION
-  const totalRevenue = allOrders.reduce((sum: number, o) => sum + o.totalAmount, 0);
+  const totalRevenue = allOrders.reduce((sum: number, o: any) => sum + o.totalAmount, 0);
   const successRate = allOrders.length > 0 
-    ? (allOrders.filter(o => o.status === 'COMPLETED').length / allOrders.length) * 100 
+    ? (allOrders.filter((o: any) => o.status === 'COMPLETED').length / allOrders.length) * 100 
     : 100;
 
   const metrics = [
